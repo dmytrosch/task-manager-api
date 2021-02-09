@@ -3,7 +3,7 @@ const Joi = require("joi");
 function validateUserRegistration(req, res, next) {
   const schema = Joi.object({
     email: Joi.string().min(1).email().required(),
-    password: Joi.string().min(1).required(),
+    password: Joi.string().min(8).required(),
   });
 
   const result = schema.validate(req.body);
@@ -17,7 +17,7 @@ function validateUserRegistration(req, res, next) {
 function validateUserLogin(req, res, next) {
   const schema = Joi.object({
     email: Joi.string().min(1).email().required(),
-    password: Joi.string().min(1).required(),
+    password: Joi.string().min(8).required(),
   });
 
   const result = schema.validate(req.body);

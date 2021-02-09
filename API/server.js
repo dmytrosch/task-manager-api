@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 const authRouter = require("./auth/auth.router");
+const usersRouter = require("./users/users.router");
 
 module.exports = class taskMgrServer {
   constructor() {
@@ -42,6 +43,7 @@ module.exports = class taskMgrServer {
   initRoutes() {
     // input routers here
     this.server.use("/api/auth", authRouter);
+    this.server.use("/api/users", usersRouter);
 
     console.log("routes initialized");
   }
