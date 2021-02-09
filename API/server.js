@@ -6,6 +6,8 @@ require("dotenv").config();
 
 const authRouter = require("./auth/auth.router");
 const usersRouter = require("./users/users.router");
+const projectsRouter = require("./taskmgr/projects/projects.router");
+const sprintsRouter = require("./taskmgr/sprints/sprints.router");
 
 module.exports = class taskMgrServer {
   constructor() {
@@ -44,6 +46,8 @@ module.exports = class taskMgrServer {
     // input routers here
     this.server.use("/api/auth", authRouter);
     this.server.use("/api/users", usersRouter);
+    this.server.use('/api/projects', projectsRouter);
+    this.server.use('/api/sprints', sprintsRouter);
 
     console.log("routes initialized");
   }
