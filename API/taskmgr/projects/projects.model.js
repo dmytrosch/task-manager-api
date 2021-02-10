@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const {
   Schema,
   Types: { ObjectId },
@@ -17,6 +17,7 @@ const projectSchema = new Schema({
 projectSchema.statics.addParticipant = addParticipant;
 projectSchema.statics.getProjectById = getProjectById;
 projectSchema.statics.addSprint = addSprint;
+projectSchema.statics.removeProjectFromColletion = removeProjectFromColletion;
 
 async function addParticipant(participantId, projectId) {
   return this.findByIdAndUpdate(projectId, {
@@ -30,7 +31,7 @@ async function getProjectById(projectId) {
 
 async function addSprint(projectId, sprintId) {
   return this.findByIdAndUpdate(projectId, {
-    $push: {sprintsIds: sprintId},
+    $push: { sprintsIds: sprintId },
   });
 }
 // async function getUserProjects (arguments) {
@@ -41,7 +42,10 @@ async function addSprint(projectId, sprintId) {
 //         }
 //     ]);
 // }
+async function removeProjectFromColletion(id) {
+  return this.findByIdAndDelete(id);
+}
 
-const projectModel = mongoose.model('Project', projectSchema);
+const projectModel = mongoose.model("Project", projectSchema);
 
 module.exports = projectModel;

@@ -21,6 +21,7 @@ userSchema.methods.checkUser = checkUser;
 userSchema.methods.updateToken = updateToken;
 userSchema.statics.verifyToken = verifyToken;
 userSchema.statics.addProject = addProject;
+userSchema.statics.removeProjectId = removeProjectId;
 
 function brcPassHash(password) {
   return bcrypt.hash(password, 3);
@@ -58,7 +59,13 @@ function verifyToken(token) {
 
 async function addProject(userId, projectId) {
   return this.findByIdAndUpdate(userId, {
-    $push: {projectIds: projectId},
+    $push: { projectIds: projectId },
+  });
+}
+
+async function removeProjectId(projectId, userId) {
+  return this.findByIdAndUpdate(userId, {
+    $pull: { projectIds: { $in: projectId } },
   });
 }
 
