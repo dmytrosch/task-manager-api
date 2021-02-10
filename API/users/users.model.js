@@ -46,7 +46,7 @@ async function checkUser(password) {
   return token;
 }
 
-async function updateToken(token) {
+function updateToken(token) {
   return userModel.findByIdAndUpdate(this._id, {
     token,
   });
