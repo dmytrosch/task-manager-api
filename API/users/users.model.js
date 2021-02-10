@@ -21,6 +21,7 @@ userSchema.methods.checkUser = checkUser;
 userSchema.methods.updateToken = updateToken;
 userSchema.statics.verifyToken = verifyToken;
 userSchema.statics.addProject = addProject;
+userSchema.statics.addToProject = addToProject;
 
 function brcPassHash(password) {
   return bcrypt.hash(password, 3);
@@ -58,8 +59,20 @@ function verifyToken(token) {
 
 async function addProject(userId, projectId) {
   return this.findByIdAndUpdate(userId, {
-    $push: {projectIds: projectId},
+    $push: { projectIds: projectId },
   });
+}
+
+async function addToProject(userId, projectId) {
+  return this.findByIdAndUpdate(
+    userId,
+    {
+      $push: { projectIds: projectId },
+    },
+    {
+      new: true,
+    }
+  );
 }
 
 const userModel = mongoose.model("User", userSchema);
