@@ -20,6 +20,7 @@ userSchema.statics.userByEmail = userByEmail;
 userSchema.methods.checkUser = checkUser;
 userSchema.methods.updateToken = updateToken;
 userSchema.statics.verifyToken = verifyToken;
+userSchema.statics.addProject = addProject;
 
 function brcPassHash(password) {
   return bcrypt.hash(password, 3);
@@ -53,6 +54,12 @@ async function updateToken(token) {
 
 function verifyToken(token) {
   return jwt.verify(token, process.env.JWT_SECRET);
+}
+
+async function addProject(userId, projectId) {
+  return this.findByIdAndUpdate(userId, {
+    $push: {projectIds: projectId},
+  });
 }
 
 const userModel = mongoose.model("User", userSchema);
