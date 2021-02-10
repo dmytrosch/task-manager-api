@@ -1,6 +1,6 @@
 const { Router } = require("express");
 
-const autorization = require("../../helpers/authorization");
+const autorization = require("../middlewares/authorization");
 const UsersControllers = require("./users.controllers");
 const asyncWrapper = require("../../utils/asyncWrapper");
 

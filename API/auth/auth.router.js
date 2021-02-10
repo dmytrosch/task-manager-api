@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const authorization = require("../../helpers/authorization");
+const authorization = require("../middlewares/authorization");
 const {
   registration,
   userLogin,
