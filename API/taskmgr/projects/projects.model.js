@@ -11,13 +11,14 @@ const projectSchema = new Schema({
   description: { type: String },
   owner: { type: ObjectId },
   participants: [{ type: ObjectId }],
-  sprintsIds: [{ type: ObjectId }],
+  sprintsIds: [{ type: ObjectId, unique: true }],
 });
 
 projectSchema.statics.addParticipant = addParticipant;
 projectSchema.statics.getProjectById = getProjectById;
 projectSchema.statics.addSprint = addSprint;
 projectSchema.statics.removeProjectFromColletion = removeProjectFromColletion;
+projectSchema.statics.addUserToProject = addUserToProject;
 
 async function addParticipant(participantId, projectId) {
   return this.findByIdAndUpdate(projectId, {
@@ -34,6 +35,13 @@ async function addSprint(projectId, sprintId) {
     $push: { sprintsIds: sprintId },
   });
 }
+
+async function addUserToProject(projectId, userId) {
+  return this.findByIdAndUpdate(projectId, {
+    $push: { participants: userId },
+  });
+}
+
 // async function getUserProjects (arguments) {
 //     return this.aggregate([
 //         $lookup: {

@@ -6,7 +6,7 @@ const SprintsControllers = require("./sprints.controllers");
 const sprintsRouter = Router();
 
 sprintsRouter.post(
-  "/create/:id",
+  "/:projectId/create",
   autorization,
   asyncWrapper(SprintsControllers.createSprint)
 );

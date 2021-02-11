@@ -3,7 +3,7 @@ const projectModel = require('../projects/projects.model');
 
 class SprintsControllers {
     async createSprint(req, res) {
-        const {id: projectId} = req.params;
+        const {projectId} = req.params;
         const {name, startAt, finishedAt} = req.body;
 
         const newSprint = new sprintModel({

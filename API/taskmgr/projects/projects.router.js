@@ -11,9 +11,10 @@ projectsRouter.post(
   asyncWrapper(ProjectsControllers.setOwner)
 );
 
-// projectsRouter.patch(
-//     '/add-participant',
-//     autorization,
-// )
+projectsRouter.patch(
+    '/:projectId/add-participant',
+    autorization,
+    asyncWrapper(ProjectsControllers.addUserToProject)
+)
 
 module.exports = projectsRouter;
