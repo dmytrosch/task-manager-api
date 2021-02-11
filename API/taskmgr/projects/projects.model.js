@@ -8,11 +8,11 @@ const {
 // const { UnauthorizedError } = require('../../helpers/error.helpers');
 
 const projectSchema = new Schema({
-  name: { type: String, required: true, unique: true },
+  name: { type: String, required: true },
   description: { type: String },
   owner: { type: ObjectId },
-  participants: [{ type: ObjectId }],
-  sprintsIds: [{ type: ObjectId }],
+  participantsIds: [{ type: ObjectId, ref: "User" }],
+  sprintsIds: [{ type: ObjectId, ref: "Sprint" }],
 });
 
 projectSchema.statics.addParticipant = addParticipant;
@@ -40,7 +40,7 @@ async function addSprint(projectId, sprintId) {
 
 async function addUserToProject(projectId, userId) {
   return this.findByIdAndUpdate(projectId, {
-    $push: { participants: userId },
+    $push: { participantsIds: userId },
   });
 }
 

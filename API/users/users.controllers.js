@@ -1,8 +1,8 @@
-const projectModel = require('../taskmgr/projects/projects.model');
-const userModel = require('./users.model');
+const projectModel = require("../taskmgr/projects/projects.model");
+const userModel = require("./users.model");
 
 class UsersControllers {
-  async getCurrentUser(req, res, next) {
+  async getCurrentUser(req, res) {
     const { _id } = req.user;
     const [user] = await userModel.aggregate([
       {
@@ -10,32 +10,27 @@ class UsersControllers {
       },
       {
         $lookup: {
-          from: 'projects',
-          localField: 'projectIds',
-          foreignField: '_id',
-          as: 'projects',
+          from: "projects",
+          localField: "projectIds",
+          foreignField: "_id",
+          as: "projects",
         },
       },
-      { $unset: ['projectIds'] },
+      { $unset: ["projectIds"] },
     ]);
-    return res.status(200).json(user);
+
+    const projects = user.projects.map((project) => {
+      return {
+        id: project._id,
+        name: project.name,
+        description: project.description,
+      }
+    });
+
+    const userToRespone = {email: user.email, projects};
+
+    return res.status(200).send(userToRespone);
   }
-
-  // async removeProjectFromUser(req, res) {
-  //   const { projectId } = req.params
-  //   const { user } = req
-
-  //   const project = user.projectIds.find((project) => project == projectId)
-  //   if (!project) {
-  //     res.status(404).json({ message: 'Project is not found!' })
-  //     return
-  //   }
-  //   await user.removeProjectId(project)
-  //   await projectModel.removeProjectFromColletion(project)
-  //   await userModel.removeProjectFromParticipants(projectId)
-
-  //   return res.status(204).json({ message: 'deleted' })
-  // }
 }
 
 module.exports = new UsersControllers();

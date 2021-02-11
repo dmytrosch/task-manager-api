@@ -14,12 +14,12 @@ async function registration(req, res) {
 
   const passwordHash = await userModel.brcPassHash(password);
 
-  const user = await new userModel({
+  const user = new userModel({
     email: req.body.email,
     password: passwordHash,
   });
 
-  user.save();
+  await user.save();
 
   return res.status(201).json({
     message: "User succssuly registraited",

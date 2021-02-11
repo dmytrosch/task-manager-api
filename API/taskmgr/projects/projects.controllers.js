@@ -1,7 +1,10 @@
-const projectModel = require('./projects.model');
-const userModel = require('../../users/users.model');
+const projectModel = require("./projects.model");
+const userModel = require("../../users/users.model");
+const {
+  Types: { ObjectId },
+} = require("mongoose");
 
-const { ConflictError } = require('../../../helpers/error.helpers');
+const { ConflictError } = require("../../../helpers/error.helpers");
 
 class ProjectsControllers {
   async createProject(req, res) {
@@ -12,7 +15,7 @@ class ProjectsControllers {
       name,
       description,
       owner: user._id,
-      participants: [user._id],
+      participantsIds: [user._id],
     });
     // const project = await userModel.findOne({
     //   _id: { $in: partic },
@@ -20,11 +23,46 @@ class ProjectsControllers {
     // if (project) {
     //   throw new ConflictError('Project is exist')
     // }
-
     await newProject.save();
     await user.addProject(newProject._id);
 
-    res.status(201).json(newProject);
+    res.status(201).send({
+      id: newProject._id,
+      name: newProject.name,
+      description: newProject.description,
+    });
+  }
+
+  async currentProject(req, res) {
+    const { projectId } = req.params;
+    const user = req.user;
+    const _id = ObjectId(projectId);
+
+    const [result] = await projectModel.aggregate([
+      {
+        $match: { _id },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "participantsIds",
+          foreignField: "_id",
+          as: "participants",
+        },
+      },
+      { $unset: ["participantsIds"] },
+      {
+        $project: {
+          name: 1,
+          description: 1,
+          participants: {
+            email: 1,
+          },
+        }
+      }
+    ]);
+
+    return res.status(200).send(result);
   }
 
   async addUserToProject(req, res) {
@@ -33,19 +71,19 @@ class ProjectsControllers {
 
     const userToAdd = await userModel.userByEmail(email);
     if (!userToAdd) {
-      return res.status(404).json({ message: 'User is not found' });
+      return res.status(404).json({ message: "User is not found" });
     }
 
-    const isProjectExist = userToAdd.projectIds.some(item => {
+    const isProjectExist = userToAdd.projectIds.some((item) => {
       const idToString = item.toString();
 
       return idToString === projectId;
     });
 
     if (isProjectExist) {
-      throw new ConflictError('User already in project');
+      throw new ConflictError("User already in project");
     }
-    await userToAdd.addToProject(projectId);
+    await userToAdd.addProject(projectId);
     await projectModel.addUserToProject(projectId, userToAdd._id);
     return res.status(200).send();
   }
@@ -54,17 +92,15 @@ class ProjectsControllers {
     const { projectId } = req.params;
     const { user } = req;
 
-    console.log(user.projectIds);
-
-    const project = user.projectIds.find(project => project == projectId);
+    const project = user.projectIds.find((project) => project == projectId);
     if (!project) {
-      return res.status(404).json({ message: 'Project is not found!' });
+      return res.status(404).json({ message: "Project is not found!" });
     }
     await user.removeProjectId(project);
     await projectModel.removeProjectFromColletion(project);
     await userModel.removeProjectFromParticipants(projectId);
 
-    return res.status(204).json({ message: 'deleted' });
+    return res.status(204).json({ message: "deleted" });
   }
 
   async updateName(req, res) {
@@ -73,16 +109,14 @@ class ProjectsControllers {
 
     const updatedProject = await projectModel.updateProjectName(
       projectId,
-      name,
+      name
     );
 
-    return res
-      .status(200)
-      .send({
-        id: updatedProject._id,
-        name: updatedProject.name,
-        description: updatedProject.description,
-      });
+    return res.status(200).send({
+      id: updatedProject._id,
+      name: updatedProject.name,
+      description: updatedProject.description,
+    });
   }
 }
 

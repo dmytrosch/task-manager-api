@@ -12,7 +12,7 @@ const userSchema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   token: { type: String, default: "" },
-  projectIds: [{ type: ObjectId }],
+  projectIds: [{ type: ObjectId, ref: "Project"}],
 });
 
 userSchema.statics.brcPassHash = brcPassHash;
@@ -23,7 +23,7 @@ userSchema.statics.verifyToken = verifyToken;
 userSchema.methods.addProject = addProject;
 userSchema.methods.removeProjectId = removeProjectId;
 userSchema.statics.removeProjectFromParticipants = removeProjectFromParticipants;
-userSchema.methods.addToProject = addToProject;
+// userSchema.methods.addToProject = addToProject;
 
 function brcPassHash(password) {
   return bcrypt.hash(password, 3);
@@ -37,7 +37,7 @@ async function checkUser(password) {
   const isPassValid = await bcrypt.compare(password, this.password);
 
   if (!isPassValid) {
-    throw new UnauthorizedError('Email or password is wrong');
+    throw new UnauthorizedError("Email or password is wrong");
   }
 
   const token = jwt.sign({ id: this.id }, process.env.JWT_SECRET, {
@@ -60,9 +60,13 @@ function verifyToken(token) {
 }
 
 function addProject(projectId) {
-  return userModel.findByIdAndUpdate(this._id, {
-    $push: { projectIds: projectId },
-  });
+  return userModel.findByIdAndUpdate(
+    this._id,
+    {
+      $push: { projectIds: projectId },
+    },
+    { new: true }
+  );
 }
 
 function removeProjectId(projectId) {
@@ -73,21 +77,21 @@ function removeProjectId(projectId) {
 async function removeProjectFromParticipants(projectId) {
   return this.updateMany(
     { projectIds: projectId },
-    { $pull: { projectIds: { $in: projectId } } },
+    { $pull: { projectIds: { $in: projectId } } }
   );
 }
-async function addToProject(projectId) {
-  return userModel.findByIdAndUpdate(
-    this._id,
-    {
-      $push: { projectIds: projectId },
-    },
-    {
-      new: true,
-    },
-  );
-}
+// async function addToProject(projectId) {
+//   return userModel.findByIdAndUpdate(
+//     this._id,
+//     {
+//       $push: { projectIds: projectId },
+//     },
+//     {
+//       new: true,
+//     }
+//   );
+// }
 
-const userModel = mongoose.model('User', userSchema);
+const userModel = mongoose.model("User", userSchema);
 
 module.exports = userModel;
