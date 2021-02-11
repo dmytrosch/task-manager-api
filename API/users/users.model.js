@@ -22,6 +22,7 @@ userSchema.methods.updateToken = updateToken;
 userSchema.statics.verifyToken = verifyToken;
 userSchema.statics.addProject = addProject;
 userSchema.statics.removeProjectId = removeProjectId;
+userSchema.statics.removeProjectFromParticipants = removeProjectFromParticipants;
 
 function brcPassHash(password) {
   return bcrypt.hash(password, 3);
@@ -67,6 +68,12 @@ async function removeProjectId(projectId, userId) {
   return this.findByIdAndUpdate(userId, {
     $pull: { projectIds: { $in: projectId } },
   });
+}
+async function removeProjectFromParticipants(projectId) {
+  return this.updateMany(
+    { projectIds: projectId },
+    { $pull: { projectIds: { $in: projectId } } }
+  );
 }
 
 const userModel = mongoose.model("User", userSchema);

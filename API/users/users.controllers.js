@@ -33,6 +33,7 @@ class UsersControllers {
 
     await userModel.removeProjectId(projectId, userId);
     await projectModel.removeProjectFromColletion(projectId);
+    await userModel.removeProjectFromParticipants(projectId);
 
     return res.status(204).json({ message: "deleted" });
   }

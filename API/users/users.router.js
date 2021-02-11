@@ -12,4 +12,10 @@ userRouter.get(
   asyncWrapper(UsersControllers.getCurrentUser)
 );
 
+userRouter.delete(
+  "/remove/:id",
+  autorization,
+  asyncWrapper(UsersControllers.removeProjectFromUser)
+);
+
 module.exports = userRouter;
