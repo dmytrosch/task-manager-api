@@ -20,7 +20,7 @@ userSchema.statics.userByEmail = userByEmail
 userSchema.methods.checkUser = checkUser
 userSchema.methods.updateToken = updateToken
 userSchema.statics.verifyToken = verifyToken
-userSchema.statics.addProject = addProject
+userSchema.methods.addProject = addProject
 userSchema.methods.removeProjectId = removeProjectId
 userSchema.statics.removeProjectFromParticipants = removeProjectFromParticipants
 userSchema.statics.addToProject = addToProject
@@ -59,14 +59,14 @@ function verifyToken(token) {
   return jwt.verify(token, process.env.JWT_SECRET)
 }
 
-async function addProject(userId, projectId) {
-  return this.findByIdAndUpdate(userId, {
+function addProject(projectId) {
+  this.update({
     $push: { projectIds: projectId },
   })
 }
 
-async function removeProjectId(projectId) {
-  await this.update({
+function removeProjectId(projectId) {
+  this.update({
     $pull: { projectIds: { $in: projectId } },
   })
 }
@@ -76,17 +76,17 @@ async function removeProjectFromParticipants(projectId) {
     { $pull: { projectIds: { $in: projectId } } }
   )
 }
-async function addToProject(userId, projectId) {
-  return this.findByIdAndUpdate(
-    userId,
-    {
-      $push: { projectIds: projectId },
-    },
-    {
-      new: true,
-    }
-  )
-}
+// async function addToProject(userId, projectId) {
+//   return this.findByIdAndUpdate(
+//     userId,
+//     {
+//       $push: { projectIds: projectId },
+//     },
+//     {
+//       new: true,
+//     }
+//   )
+// }
 
 const userModel = mongoose.model('User', userSchema)
 
