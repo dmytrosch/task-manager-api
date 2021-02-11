@@ -21,7 +21,7 @@ userSchema.methods.checkUser = checkUser
 userSchema.methods.updateToken = updateToken
 userSchema.statics.verifyToken = verifyToken
 userSchema.statics.addProject = addProject
-userSchema.statics.removeProjectId = removeProjectId
+userSchema.methods.removeProjectId = removeProjectId
 userSchema.statics.removeProjectFromParticipants = removeProjectFromParticipants
 userSchema.statics.addToProject = addToProject
 
@@ -65,8 +65,8 @@ async function addProject(userId, projectId) {
   })
 }
 
-async function removeProjectId(projectId, userId) {
-  return this.findByIdAndUpdate(userId, {
+async function removeProjectId(projectId) {
+  await this.update({
     $pull: { projectIds: { $in: projectId } },
   })
 }

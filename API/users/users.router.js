@@ -13,7 +13,7 @@ userRouter.get(
 );
 
 userRouter.delete(
-  "/remove/:id",
+  "/remove/:projectId",
   autorization,
   asyncWrapper(UsersControllers.removeProjectFromUser)
 );

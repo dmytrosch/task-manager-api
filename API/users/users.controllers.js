@@ -1,42 +1,41 @@
-const projectModel = require("../taskmgr/projects/projects.model");
-const userModel = require("./users.model");
+const projectModel = require('../taskmgr/projects/projects.model')
+const userModel = require('./users.model')
 
 class UsersControllers {
   async getCurrentUser(req, res, next) {
-    const { email, projectIds, _id } = req.user;
-    const user = await userModel.aggregate([
+    const { _id } = req.user
+    const [user] = await userModel.aggregate([
       {
         $match: { _id },
       },
       {
         $lookup: {
-          from: "projects",
-          localField: "projectIds",
-          foreignField: "_id",
-          as: "projects",
+          from: 'projects',
+          localField: 'projectIds',
+          foreignField: '_id',
+          as: 'projects',
         },
       },
-      { $unset: ["projectIds"] },
-    ]);
-    console.log("user", user);
-    // const userProjects = await Promise.all(projectIds.map(async projectId => {
-    //     const {_id: id, name, description, owner} = await projectModel.getProjectById(projectId);
-    //     return {id, name, description, ownerId: owner};
-    // }));
-
-    return res.status(200).send({ user });
+      { $unset: ['projectIds'] },
+    ])
+    return res.status(200).json(user)
   }
 
   async removeProjectFromUser(req, res) {
-    const { id: projectId } = req.params;
-    const { _id: userId } = req.user;
+    const { projectId } = req.params
+    const { user } = req
 
-    await userModel.removeProjectId(projectId, userId);
-    await projectModel.removeProjectFromColletion(projectId);
-    await userModel.removeProjectFromParticipants(projectId);
+    const project = user.projectIds.find((project) => project == projectId)
+    if (!project) {
+      res.status(404).json({ message: 'Project is not found!' })
+      return
+    }
+    await user.removeProjectId(project)
+    await projectModel.removeProjectFromColletion(project)
+    await userModel.removeProjectFromParticipants(projectId)
 
-    return res.status(204).json({ message: "deleted" });
+    return res.status(204).json({ message: 'deleted' })
   }
 }
 
-module.exports = new UsersControllers();
+module.exports = new UsersControllers()
