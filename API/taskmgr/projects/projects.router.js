@@ -1,20 +1,33 @@
-const { Router } = require("express");
-const autorization = require("../../middlewares/authorization");
-const asyncWrapper = require("../../../utils/asyncWrapper");
-const ProjectsControllers = require("./projects.controllers");
+const { Router } = require('express');
+const autorization = require('../../middlewares/authorization');
+const asyncWrapper = require('../../../utils/asyncWrapper');
+const ProjectsControllers = require('./projects.controllers');
+const authorization = require('../../middlewares/authorization');
 
 const projectsRouter = Router();
 
 projectsRouter.post(
-  "/create",
+  '/create',
   autorization,
-  asyncWrapper(ProjectsControllers.setOwner)
+  asyncWrapper(ProjectsControllers.createProject),
 );
 
 projectsRouter.patch(
-    '/:projectId/add-participant',
-    autorization,
-    asyncWrapper(ProjectsControllers.addUserToProject)
+  '/:projectId/add-participant',
+  autorization,
+  asyncWrapper(ProjectsControllers.addUserToProject),
+);
+
+projectsRouter.delete(
+  '/:projectId/remove',
+  autorization,
+  asyncWrapper(ProjectsControllers.removeProject),
+);
+
+projectsRouter.patch(
+  '/:projectId/change-name',
+  authorization,
+  asyncWrapper(ProjectsControllers.updateName),
 )
 
 module.exports = projectsRouter;

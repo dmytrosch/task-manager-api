@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 const {
   Schema,
   Types: { ObjectId },
@@ -14,17 +15,18 @@ const projectSchema = new Schema({
   sprintsIds: [{ type: ObjectId }],
 });
 
-// projectSchema.statics.addParticipant = addParticipant;
+projectSchema.statics.addParticipant = addParticipant;
 projectSchema.statics.getProjectById = getProjectById;
 projectSchema.statics.addSprint = addSprint;
 projectSchema.statics.removeProjectFromColletion = removeProjectFromColletion;
-projectSchema.methods.addUserToProject = addUserToProject;
+projectSchema.statics.addUserToProject = addUserToProject;
+projectSchema.statics.updateProjectName = updateProjectName;
 
-// async function addParticipant(participantId, projectId) {
-//   return this.findByIdAndUpdate(projectId, {
-//     $push: { participants: participantId },
-//   });
-// }
+async function addParticipant(participantId, projectId) {
+  return this.findByIdAndUpdate(projectId, {
+    $push: { participants: participantId },
+  });
+}
 
 async function getProjectById(projectId) {
   return this.findById(projectId);
@@ -36,9 +38,10 @@ async function addSprint(projectId, sprintId) {
   });
 }
 
-function addUserToProject(userId) {
-  this.participants.push(userId);
-  this.save();
+async function addUserToProject(projectId, userId) {
+  return this.findByIdAndUpdate(projectId, {
+    $push: { participants: userId },
+  });
 }
 
 // async function getUserProjects (arguments) {
@@ -51,6 +54,14 @@ function addUserToProject(userId) {
 // }
 async function removeProjectFromColletion(id) {
   return this.findByIdAndDelete(id);
+}
+
+async function updateProjectName(projectId, newName) {
+  return this.findByIdAndUpdate(
+    projectId,
+    { $set: { name: newName } },
+    { new: true }
+  );
 }
 
 const projectModel = mongoose.model("Project", projectSchema);
