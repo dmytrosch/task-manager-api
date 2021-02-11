@@ -22,16 +22,15 @@ class ProjectsControllers {
     // }
 
     await newProject.save();
-
     await user.addProject(newProject._id);
 
-    res.status(201).json({ name, description });
+    res.status(201).json(newProject);
   }
 
   async addUserToProject(req, res) {
     const { email } = req.body;
     const { projectId } = req.params;
-    const project = await projectModel.findById(projectId);
+    const project = await projectModel.getProjectById(projectId);
     if (!project) {
       res.status(404).json({ message: "Project is not found" });
       return;
@@ -45,7 +44,6 @@ class ProjectsControllers {
 
     const isProjectExist = userToAdd.projectIds.some((item) => {
       const idToString = item.toString();
-
       return idToString === projectId;
     });
 
