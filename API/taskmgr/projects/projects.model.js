@@ -14,17 +14,17 @@ const projectSchema = new Schema({
   sprintsIds: [{ type: ObjectId }],
 });
 
-projectSchema.statics.addParticipant = addParticipant;
+// projectSchema.statics.addParticipant = addParticipant;
 projectSchema.statics.getProjectById = getProjectById;
 projectSchema.statics.addSprint = addSprint;
 projectSchema.statics.removeProjectFromColletion = removeProjectFromColletion;
 projectSchema.methods.addUserToProject = addUserToProject;
 
-async function addParticipant(participantId, projectId) {
-  return this.findByIdAndUpdate(projectId, {
-    $push: { participants: participantId },
-  });
-}
+// async function addParticipant(participantId, projectId) {
+//   return this.findByIdAndUpdate(projectId, {
+//     $push: { participants: participantId },
+//   });
+// }
 
 async function getProjectById(projectId) {
   return this.findById(projectId);
