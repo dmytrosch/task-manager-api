@@ -9,6 +9,8 @@ const usersRouter = require('./users/users.router')
 const projectsRouter = require('./taskmgr/projects/projects.router')
 const sprintsRouter = require('./taskmgr/sprints/sprints.router')
 
+const { ConflictError, UnauthorizedError } = require('../helpers/error.helpers');
+
 module.exports = class taskMgrServer {
   constructor() {
     this.server = null
@@ -22,6 +24,7 @@ module.exports = class taskMgrServer {
     this.initMiddlwares()
     this.initRoutes()
     await this.initDatabase()
+    this.errorHandling()
     this.startListening()
   }
 
@@ -40,6 +43,17 @@ module.exports = class taskMgrServer {
     this.server.use(cors({ origin: `http://localhost:${process.env.PORT}` }))
     this.server.use(morgan('dev'))
     console.log('middlewares initialized')
+  }
+
+  errorHandling() {
+    this.server.use((error, req, res, next) => {
+      if (error instanceof ConflictError) {
+        return res.status(error.status).send({ message: error.message })
+      }
+      if (error instanceof UnauthorizedError) {
+        return res.status(error.status).send({ message: error.message })
+      }
+    })
   }
 
   initRoutes() {
