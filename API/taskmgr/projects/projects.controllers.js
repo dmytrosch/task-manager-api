@@ -1,7 +1,7 @@
-const projectModel = require('./projects.model');
-const userModel = require('../../users/users.model');
+const projectModel = require("./projects.model");
+const userModel = require("../../users/users.model");
 
-const { ConflictError } = require('../../../helpers/error.helpers');
+const { ConflictError } = require("../../../helpers/error.helpers");
 
 class ProjectsControllers {
   async setOwner(req, res, next) {
@@ -25,16 +25,21 @@ class ProjectsControllers {
 
     await user.addProject(newProject._id);
 
-    return res.status(201).json({ name, description });
+    res.status(201).json({ name, description });
   }
 
   async addUserToProject(req, res) {
     const { email } = req.body;
     const { projectId } = req.params;
+    const project = await projectModel.findById(projectId);
+    if (!project) {
+      res.status(404).json({ message: "Project is not found" });
+      return;
+    }
 
     const userToAdd = await userModel.userByEmail(email);
     if (!userToAdd) {
-      res.status(404).json({ message: 'User is not found' });
+      res.status(404).json({ message: "User is not found" });
       return;
     }
 
@@ -45,11 +50,11 @@ class ProjectsControllers {
     });
 
     if (isProjectExist) {
-      throw new ConflictError('User already in project');
+      throw new ConflictError("User already in project");
     }
     await userToAdd.addProject(projectId);
-    await projectModel.addUserToProject(projectId, userToAdd._id);
-    return res.status(200).send();
+    await project.addUserToProject(userToAdd._id);
+    res.status(200).send();
   }
 }
 
