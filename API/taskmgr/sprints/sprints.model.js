@@ -8,6 +8,7 @@ const sprintSchema = new Schema({
   name: { type: String, required: true },
   startAt: { type: String, required: true },
   finishedAt: { type: String, required: true },
+  timeDifference: String,
   tasksIds: [{ type: ObjectId }],
 });
 
@@ -20,12 +21,8 @@ async function addTask(sprintId, taskId) {
   });
 }
 
-async function removeSprint(projectId, sprintId) {
-  return this.findByIdAndUpdate(
-    projectId,
-    { $pull: { sprintIds: { $in: sprintId } } },
-    { new: true }
-  );
+async function removeSprint(sprintId) {
+  return this.findByIdAndDelete(sprintId);
 }
 
 const sprintModel = mongoose.model("Sprint", sprintSchema);

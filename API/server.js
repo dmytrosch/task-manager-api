@@ -56,6 +56,7 @@ module.exports = class taskMgrServer {
       if (error instanceof UnauthorizedError) {
         return res.status(error.status).send({ message: error.message });
       }
+      return res.status(500).send({message: error.message});
     });
   }
 

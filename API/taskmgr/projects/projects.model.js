@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const {
   Schema,
@@ -11,8 +11,8 @@ const projectSchema = new Schema({
   name: { type: String, required: true },
   description: { type: String },
   owner: { type: ObjectId },
-  participantsIds: [{ type: ObjectId, ref: "User" }],
-  sprintsIds: [{ type: ObjectId, ref: "Sprint" }],
+  participantsIds: [{ type: ObjectId, ref: 'User' }],
+  sprintsIds: [{ type: ObjectId, ref: 'Sprint' }],
 });
 
 projectSchema.statics.addParticipant = addParticipant;
@@ -21,6 +21,7 @@ projectSchema.statics.addSprint = addSprint;
 projectSchema.statics.removeProjectFromColletion = removeProjectFromColletion;
 projectSchema.statics.addUserToProject = addUserToProject;
 projectSchema.statics.updateProjectName = updateProjectName;
+projectSchema.statics.removeSprint = removeSprint;
 
 async function addParticipant(participantId, projectId) {
   return this.findByIdAndUpdate(projectId, {
@@ -60,10 +61,17 @@ async function updateProjectName(projectId, newName) {
   return this.findByIdAndUpdate(
     projectId,
     { $set: { name: newName } },
-    { new: true }
+    { new: true },
   );
 }
 
-const projectModel = mongoose.model("Project", projectSchema);
+async function removeSprint(projectId, sprintId) {
+  return this.updateMany(
+    { sprintsIds: sprintId },
+    { $pull: { sprintsIds: { $in: sprintId } } },
+  );
+}
+
+const projectModel = mongoose.model('Project', projectSchema);
 
 module.exports = projectModel;
