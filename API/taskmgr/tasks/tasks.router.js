@@ -11,4 +11,10 @@ tasksRouter.post(
   asyncWrapper(TasksControllers.createTask)
 );
 
+sprintsRouter.delete(
+  "/:sprintId/:taskId/remove",
+  autorization,
+  asyncWrapper(TasksControllers.removeTaskfromSprint)
+);
+
 module.exports = tasksRouter;

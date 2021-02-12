@@ -19,8 +19,8 @@ class SprintsControllers {
     return res.status(201).send({ data: { name, startAt, finishedAt } });
   }
 
-  async removeSprintfromproject(req, res) {
-    const { sprintId, projectId } = req.params;
+  async removeSprintfromProject(req, res) {
+    const { projectId, sprintId } = req.params;
 
     await sprintModel.removeSprint(projectId, sprintId);
 
