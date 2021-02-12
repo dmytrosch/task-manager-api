@@ -7,7 +7,7 @@ const {
 const taskSchema = new Schema({
   name: { type: String, required: true, unique: true },
   planedTime: { type: Number, required: true },
-  owner: { type: ObjectId },
+  // owner: { type: ObjectId },
 });
 
 const taskModel = mongoose.model("Task", taskSchema);

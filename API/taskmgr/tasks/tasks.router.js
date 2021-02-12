@@ -6,7 +6,7 @@ const TasksControllers = require("./tasks.controllers");
 const tasksRouter = Router();
 
 tasksRouter.post(
-  "/create/:id",
+  ":sprintId/create/",
   autorization,
   asyncWrapper(TasksControllers.createTask)
 );

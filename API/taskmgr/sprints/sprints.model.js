@@ -12,6 +12,13 @@ const sprintSchema = new Schema({
 });
 
 sprintSchema.statics.removeSprint = removeSprint;
+sprintSchema.statics.addTask = addTask;
+
+async function addTask(sprintId, taskId) {
+  return this.findByIdAndUpdate(sprintId, {
+    $push: { tasksIds: taskId },
+  });
+}
 
 async function removeSprint(projectId, sprintId) {
   return this.findByIdAndUpdate(
