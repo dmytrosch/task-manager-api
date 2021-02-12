@@ -11,4 +11,10 @@ sprintsRouter.post(
   asyncWrapper(SprintsControllers.createSprint)
 );
 
+sprintsRouter.delete(
+  "/:projectId/:sprintId/remove",
+  autorization,
+  asyncWrapper(SprintsControllers.removeSprintfromproject)
+);
+
 module.exports = sprintsRouter;
