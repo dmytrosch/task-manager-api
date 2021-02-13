@@ -8,6 +8,7 @@ const authRouter = require("./auth/auth.router");
 const usersRouter = require("./users/users.router");
 const projectsRouter = require("./taskmgr/projects/projects.router");
 const sprintsRouter = require("./taskmgr/sprints/sprints.router");
+const tasksRouter = require("./taskmgr/tasks/tasks.router");
 
 const {
   ConflictError,
@@ -66,6 +67,7 @@ module.exports = class taskMgrServer {
     this.server.use("/api/users", usersRouter);
     this.server.use("/api/projects", projectsRouter);
     this.server.use("/api/sprints", sprintsRouter);
+    this.server.use("/api/tasks", tasksRouter);
 
     console.log("routes initialized");
   }

@@ -1,5 +1,4 @@
 const { Router } = require("express");
-const autorization = require("../../middlewares/authorization");
 const asyncWrapper = require("../../../utils/asyncWrapper");
 const ProjectsControllers = require("./projects.controllers");
 const authorization = require("../../middlewares/authorization");
@@ -8,19 +7,19 @@ const projectsRouter = Router();
 
 projectsRouter.post(
   "/create",
-  autorization,
+  authorization,
   asyncWrapper(ProjectsControllers.createProject)
 );
 
 projectsRouter.patch(
   "/:projectId/add-participant",
-  autorization,
+  authorization,
   asyncWrapper(ProjectsControllers.addUserToProject)
 );
 
 projectsRouter.delete(
   "/:projectId/remove",
-  autorization,
+  authorization,
   asyncWrapper(ProjectsControllers.removeProject)
 );
 

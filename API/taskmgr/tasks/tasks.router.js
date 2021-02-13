@@ -6,12 +6,12 @@ const TasksControllers = require("./tasks.controllers");
 const tasksRouter = Router();
 
 tasksRouter.post(
-  ":sprintId/create/",
+  "/:sprintId/create",
   autorization,
   asyncWrapper(TasksControllers.createTask)
 );
 
-sprintsRouter.delete(
+tasksRouter.delete(
   "/:sprintId/:taskId/remove",
   autorization,
   asyncWrapper(TasksControllers.removeTaskfromSprint)
