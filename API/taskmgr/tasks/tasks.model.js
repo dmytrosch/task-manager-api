@@ -5,7 +5,7 @@ const {
 } = mongoose;
 
 const taskSchema = new Schema({
-  name: { type: String, required: true, unique: true },
+  name: { type: String, required: true },
   planedTime: { type: Number, required: true },
   // owner: { type: ObjectId },
 });
