@@ -7,19 +7,19 @@ const {
 
 class TasksControllers {
   async createTask(req, res) {
-    const { name, planedTime } = req.body;
+    const { name, plannedTime } = req.body;
     const { sprintId } = req.params;
 
     const newTask = new taskModel({
       name,
-      planedTime,
+      plannedTime,
     });
 
     await newTask.save();
 
     await sprintModel.addTask(sprintId, newTask._id);
 
-    return res.status(201).send({ id: newTask._id, name, planedTime });
+    return res.status(201).send({ id: newTask._id, name, plannedTime });
   }
 
   async removeTaskfromSprint(req, res) {
@@ -27,8 +27,7 @@ class TasksControllers {
 
     const taskObjId = ObjectId(taskId);
 
-    const result = await taskModel.findById(taskObjId);
-    console.log(result);
+    await taskModel.findById(taskObjId);
 
     await taskModel.removeTask(taskObjId);
     await sprintModel.removeTaskFromSprint(taskObjId);
@@ -53,7 +52,7 @@ class TasksControllers {
       .send({
         id: updatedTask._id,
         name: updatedTask.name,
-        planedTime: updatedTask.planedTime,
+        plannedTime: updatedTask.plannedTime,
         spendedTime: updatedTask.spendedTime,
       });
   }

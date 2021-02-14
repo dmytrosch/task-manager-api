@@ -48,8 +48,7 @@ class SprintsControllers {
     const pId = ObjectId(projectId);
     const sId = ObjectId(sprintId);
 
-    const result = await projectModel.removeSprint(pId, sId);
-    console.log(result);
+    await projectModel.removeSprint(pId, sId);
     await sprintModel.removeSprint(sId);
 
     return res.status(204).json({ message: 'deleted' });
