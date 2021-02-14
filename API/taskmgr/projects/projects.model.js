@@ -65,7 +65,7 @@ async function updateProjectName(projectId, newName) {
   );
 }
 
-async function removeSprint(projectId, sprintId) {
+async function removeSprint(sprintId) {
   return this.updateMany(
     { sprintsIds: sprintId },
     { $pull: { sprintsIds: { $in: sprintId } } },

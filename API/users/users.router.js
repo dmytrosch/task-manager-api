@@ -12,4 +12,4 @@ userRouter.get(
   asyncWrapper(UsersControllers.getCurrentUser)
 );
 
-module.exports = userRouter;``
+module.exports = userRouter;

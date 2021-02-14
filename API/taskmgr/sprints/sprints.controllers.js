@@ -1,11 +1,11 @@
-const sprintModel = require("./sprints.model");
-const projectModel = require("../projects/projects.model");
-const dateFormat = require("dateformat");
-const diffDates = require("diff-dates");
+const sprintModel = require('./sprints.model');
+const projectModel = require('../projects/projects.model');
+const dateFormat = require('dateformat');
+const diff = require('../../../utils/date');
 
 const {
   Types: { ObjectId },
-} = require("mongoose");
+} = require('mongoose');
 
 class SprintsControllers {
   async createSprint(req, res) {
@@ -13,16 +13,11 @@ class SprintsControllers {
     const { name, startAt, finishedAt } = req.body;
     const user = req.user;
 
-    console.log();
-    //new Date(2015, 11, 16) так передавать в запросе
+    const startAtFormatted = dateFormat(startAt, 'paddedShortDate');
+    const finishedAtFormatted = dateFormat(finishedAt, 'paddedShortDate');
 
-    const startAtFormatted = dateFormat(startAt, "paddedShortDate");
-    const finishedAtFormatted = dateFormat(finishedAt, "paddedShortDate");
-    const [startDay, startMonth, startYear] = startAtFormatted.split("/");
-    const [finishDay, finishMonth, finishYear] = finishedAtFormatted.split("/");
-    const startDate = new Date(startYear, startMonth, startDay);
-    const finishDate = new Date(finishYear, finishMonth, finishDay);
-    const timeDifference = diffDates(finishDate, startDate, "days").toString();
+    const timeDifference = diff(startAtFormatted, finishedAtFormatted).toString();
+
 
     const newSprint = new sprintModel({
       name,
@@ -38,7 +33,13 @@ class SprintsControllers {
 
     return res
       .status(201)
-      .send({ name, startAtFormatted, finishedAtFormatted, timeDifference });
+      .send({
+        id: newSprint._id,
+        name,
+        startAtFormatted,
+        finishedAtFormatted,
+        timeDifference,
+      });
   }
 
   async removeSprintfromProject(req, res) {
@@ -47,11 +48,10 @@ class SprintsControllers {
     const pId = ObjectId(projectId);
     const sId = ObjectId(sprintId);
 
-    const result = await projectModel.removeSprint(pId, sId);
-    console.log(result);
+    await projectModel.removeSprint(pId, sId);
     await sprintModel.removeSprint(sId);
 
-    return res.status(204).json({ message: "deleted" });
+    return res.status(204).json({ message: 'deleted' });
   }
 
   async currentSprint(req, res) {
@@ -63,55 +63,47 @@ class SprintsControllers {
     const isOwner =
       sprint.owner.toString() === user._id.toString() ? true : false;
 
-
-
-
     const [result] = await sprintModel.aggregate([
       {
         $match: { _id },
       },
       {
         $lookup: {
-          from: "tasks",
-          localField: "tasksIds",
-          foreignField: "_id",
-          as: "tasks",
+          from: 'tasks',
+          localField: 'tasksIds',
+          foreignField: '_id',
+          as: 'tasks',
         },
       },
       {
-        $unset: ['tasksIds']
+        $unset: ['tasksIds'],
       },
       {
         $project: {
           name: 1,
           tasks: {
+            _id: 1,
             name: 1,
             planedTime: 1,
-          }
-        }
-      }
+          },
+        },
+      },
     ]);
 
-    return res.status(200).send({... result, isOwner})
-
+    return res.status(200).send({ ...result, isOwner });
   }
-
 
   async updateName(req, res) {
     const { sprintId } = req.params;
     const { name } = req.body;
 
-    const updatedSprint = await sprintModel.updateSprintName(
-      sprintId,
-      name,
-    );
+    const updatedSprint = await sprintModel.updateSprintName(sprintId, name);
 
     return res.status(200).send({
       id: updatedSprint._id,
       name: updatedSprint.name,
     });
   }
-
 }
 
 module.exports = new SprintsControllers();

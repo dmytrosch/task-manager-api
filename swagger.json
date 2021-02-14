@@ -1,0 +1,845 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Task manager",
+    "description": "Created by JustDenis\n",
+    "version": "1.0.0"
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  },
+  "servers": [
+    {
+      "url": "https://virtserver.swaggerhub.com/justdenis7/task-manager-api/1.0.0",
+      "description": "SwaggerHub API Auto Mocking"
+    },
+    {
+      "url": "http://localhost:3000/",
+      "description": "Base url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Auth operation"
+    },
+    {
+      "name": "Users",
+      "description": "Users operations"
+    },
+    {
+      "name": "Projects",
+      "description": "Projects operations"
+    },
+    {
+      "name": "Sprints",
+      "description": "Sprints operations"
+    },
+    {
+      "name": "Tasks",
+      "description": "Tasks operations"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Add a new user",
+        "operationId": "addUser",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/AuthRegister"
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Login user",
+        "operationId": "loginUser",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/AuthLogin"
+        },
+        "responses": {
+          "200": {
+            "description": "Loged in"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Logout user",
+        "operationId": "logoutUser",
+        "responses": {
+          "204": {
+            "description": "Logout success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/users/current": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get current user",
+        "operationId": "currentUser",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "aplication/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentUser"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/projects/create": {
+      "post": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Create project",
+        "operationId": "createProject",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/ProjectsCreate"
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/add-participant": {
+      "patch": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Create project",
+        "operationId": "addParticipant",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "Project id",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/AddParticipant"
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/remove": {
+      "delete": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Remove project",
+        "operationId": "removeProject",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "Project id",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/change-name": {
+      "patch": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Update project name",
+        "operationId": "changeName",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "Project id",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/UpdateProjectName"
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}": {
+      "get": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Get current project",
+        "operationId": "currentProject",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "Project id",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCurrentProject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/sprints/create": {
+      "post": {
+        "tags": [
+          "Sprints"
+        ],
+        "summary": "Create sprint",
+        "operationId": "createSprint",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/CreateSprint"
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/sprints/{projectId}/{sprintId}/remove": {
+      "delete": {
+        "tags": [
+          "Sprints"
+        ],
+        "summary": "Remove sprint",
+        "operationId": "removeSprint",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "Project id",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sprintId",
+            "in": "path",
+            "description": "Sprint id",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/sprints/{sprintId}": {
+      "get": {
+        "tags": [
+          "Sprints"
+        ],
+        "summary": "Get current sprint",
+        "operationId": "currentSprint",
+        "parameters": [
+          {
+            "name": "sprintId",
+            "in": "path",
+            "description": "Sprint id",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentSprint"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/sprints/{sprintId}/change-name": {
+      "patch": {
+        "tags": [
+          "Sprints"
+        ],
+        "summary": "Update sprint name",
+        "operationId": "sprintChangeName",
+        "parameters": [
+          {
+            "name": "sprintId",
+            "in": "path",
+            "description": "SprintId id",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/UpdateProjectName"
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/tasks/create": {
+      "post": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Create task",
+        "operationId": "createTask",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/CreateTask"
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/tasks/{sprintId}/{taskId}/remove": {
+      "delete": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Remove task",
+        "operationId": "removeTask",
+        "parameters": [
+          {
+            "name": "sprintId",
+            "in": "path",
+            "description": "Sprint id",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "taskId",
+            "in": "path",
+            "description": "Task id",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/tasks/{taskId}/update-time": {
+      "patch": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Update task time",
+        "operationId": "taskChangeTime",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "description": "Task id",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/UpdateTime"
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Register": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "Login": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "CurrentUser": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "email@mail.com"
+          },
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CurrentUserProjectItem"
+            }
+          }
+        }
+      },
+      "CreateProject": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Project name"
+          },
+          "description": {
+            "type": "string",
+            "example": "Project description"
+          }
+        }
+      },
+      "CurrentUserProjectItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "Project name"
+          },
+          "description": {
+            "type": "string",
+            "example": "Project description"
+          }
+        }
+      },
+      "AddParticipant": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "email@mail.com"
+          }
+        }
+      },
+      "UpdateProjectName": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "new-name"
+          }
+        }
+      },
+      "GetCurrentProject": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CurrentProjectParticipants"
+            }
+          },
+          "sprints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CurrentProjectSprints"
+            }
+          },
+          "isOwner": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CurrentProjectParticipants": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "email@mail.com"
+          }
+        }
+      },
+      "CurrentProjectSprints": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "startAt": {
+            "type": "string"
+          },
+          "finishedAt": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateSprint": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "startAt": {
+            "type": "string"
+          },
+          "finishedAt": {
+            "type": "string"
+          }
+        }
+      },
+      "CurrentSprint": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CurrentSprintItem"
+            }
+          },
+          "isOwner": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CurrentSprintItem": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateTask": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "plannedTime": {
+            "type": "number"
+          }
+        }
+      },
+      "UpdateTime": {
+        "type": "object",
+        "properties": {
+          "hours": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "requestBodies": {
+      "AuthRegister": {
+        "description": "Create new user",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Register"
+            }
+          }
+        },
+        "required": true
+      },
+      "AuthLogin": {
+        "description": "Create new user",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Login"
+            }
+          }
+        },
+        "required": true
+      },
+      "ProjectsCreate": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateProject"
+            }
+          }
+        }
+      },
+      "AddParticipant": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/AddParticipant"
+            }
+          }
+        }
+      },
+      "UpdateProjectName": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UpdateProjectName"
+            }
+          }
+        }
+      },
+      "CreateSprint": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateSprint"
+            }
+          }
+        }
+      },
+      "CreateTask": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateTask"
+            }
+          }
+        }
+      },
+      "UpdateTime": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UpdateTime"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "petstore_auth": {
+        "type": "oauth2",
+        "flows": {
+          "implicit": {
+            "authorizationUrl": "http://petstore.swagger.io/oauth/dialog",
+            "scopes": {
+              "write:pets": "modify pets in your account",
+              "read:pets": "read your pets"
+            }
+          }
+        }
+      },
+      "api_key": {
+        "type": "apiKey",
+        "name": "api_key",
+        "in": "header"
+      }
+    }
+  }
+}
