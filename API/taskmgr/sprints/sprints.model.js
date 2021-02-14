@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const {
   Schema,
   Types: { ObjectId },
@@ -16,6 +16,7 @@ const sprintSchema = new Schema({
 sprintSchema.statics.removeSprint = removeSprint;
 sprintSchema.statics.addTask = addTask;
 sprintSchema.statics.updateSprintName = updateSprintName;
+sprintSchema.statics.removeTaskFromSprint = removeTaskFromSprint;
 
 async function addTask(sprintId, taskId) {
   return this.findByIdAndUpdate(sprintId, {
@@ -27,8 +28,12 @@ async function removeSprint(sprintId) {
   return this.findByIdAndDelete(sprintId);
 }
 
-const sprintModel = mongoose.model("Sprint", sprintSchema);
-
+async function removeTaskFromSprint(taskId) {
+  return this.updateMany(
+    { tasksIds: taskId },
+    { $pull: { tasksIds: { $in: taskId } } },
+  );
+}
 
 async function updateSprintName(sprintId, newName) {
   return this.findByIdAndUpdate(
@@ -37,5 +42,7 @@ async function updateSprintName(sprintId, newName) {
     { new: true },
   );
 }
+
+const sprintModel = mongoose.model('Sprint', sprintSchema);
 
 module.exports = sprintModel;

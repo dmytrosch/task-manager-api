@@ -17,4 +17,10 @@ tasksRouter.delete(
   asyncWrapper(TasksControllers.removeTaskfromSprint)
 );
 
+tasksRouter.patch(
+  '/:taskId/update-time',
+  autorization,
+  asyncWrapper(TasksControllers.updateSpendedTime)
+)
+
 module.exports = tasksRouter;
