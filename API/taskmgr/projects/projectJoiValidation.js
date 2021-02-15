@@ -1,4 +1,5 @@
 const Joi = require("joi");
+const { JoiValidationError } = require("../../../helpers/error.helpers");
 
 function projectCreateValidation(req, res, next) {
   const schema = Joi.object({
@@ -8,8 +9,10 @@ function projectCreateValidation(req, res, next) {
 
   const result = schema.validate(req.body);
 
+  const { message } = result.error;
+
   if (result.error) {
-    return res.status(400).send(result.error);
+    throw new JoiValidationError(message);
   }
   next();
 }
@@ -21,8 +24,10 @@ function projectUpdateNameValidation(req, res, next) {
 
   const result = schema.validate(req.body);
 
+  const { message } = result.error;
+
   if (result.error) {
-    return res.status(400).send(result.error);
+    throw new JoiValidationError(message);
   }
   next();
 }
@@ -34,8 +39,10 @@ function addParticipantToProjectValidation(req, res, next) {
 
   const result = schema.validate(req.body);
 
+  const { message } = result.error;
+
   if (result.error) {
-    return res.status(400).send(result.error);
+    throw new JoiValidationError(message);
   }
   next();
 }
