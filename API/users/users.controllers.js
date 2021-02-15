@@ -1,4 +1,3 @@
-const projectModel = require("../taskmgr/projects/projects.model");
 const userModel = require("./users.model");
 
 class UsersControllers {
