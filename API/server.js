@@ -10,12 +10,13 @@ const projectsRouter = require("./taskmgr/projects/projects.router");
 const sprintsRouter = require("./taskmgr/sprints/sprints.router");
 const tasksRouter = require("./taskmgr/tasks/tasks.router");
 
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('../swagger.json');
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("../swagger.json");
 
 const {
   ConflictError,
   UnauthorizedError,
+  JoiValidationError,
 } = require("../helpers/error.helpers");
 
 module.exports = class taskMgrServer {
@@ -60,7 +61,10 @@ module.exports = class taskMgrServer {
       if (error instanceof UnauthorizedError) {
         return res.status(error.status).send({ message: error.message });
       }
-      return res.status(500).send({message: error.message});
+      if (error instanceof JoiValidationError) {
+        return res.status(error.status).send({ message: error.message });
+      }
+      return res.status(500).send({ message: error.message });
     });
   }
 
@@ -71,7 +75,11 @@ module.exports = class taskMgrServer {
     this.server.use("/api/projects", projectsRouter);
     this.server.use("/api/sprints", sprintsRouter);
     this.server.use("/api/tasks", tasksRouter);
-    this.server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+    this.server.use(
+      "/api-docs",
+      swaggerUi.serve,
+      swaggerUi.setup(swaggerDocument)
+    );
 
     console.log("routes initialized");
   }
