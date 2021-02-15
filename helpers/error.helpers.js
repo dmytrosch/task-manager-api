@@ -12,7 +12,15 @@ class UnauthorizedError extends Error {
   }
 }
 
+class JoiValidationError extends Error {
+  constructor(message) {
+    super(message);
+    this.status = 400;
+  }
+}
+
 module.exports = {
   ConflictError,
   UnauthorizedError,
+  JoiValidationError,
 };

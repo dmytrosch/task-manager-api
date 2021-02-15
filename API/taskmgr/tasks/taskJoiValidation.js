@@ -1,10 +1,10 @@
 const Joi = require("joi");
-const { JoiValidationError } = require("../../helpers/error.helpers");
+const { JoiValidationError } = require("../../../helpers/error.helpers");
 
-function validateUserRegistration(req, res, next) {
+function taskCreateValidation(req, res, next) {
   const schema = Joi.object({
-    email: Joi.string().min(6).email().required(),
-    password: Joi.string().min(8).required(),
+    name: Joi.string().min(1).email().required(),
+    plannedTime: Joi.number().required(),
   });
 
   const result = schema.validate(req.body);
@@ -17,10 +17,9 @@ function validateUserRegistration(req, res, next) {
   next();
 }
 
-function validateUserLogin(req, res, next) {
+function taskTimeUpdateValidation(req, res, next) {
   const schema = Joi.object({
-    email: Joi.string().min(6).email().required(),
-    password: Joi.string().min(8).required(),
+    spendedTime: Joi.number(),
   });
 
   const result = schema.validate(req.body);
@@ -34,6 +33,6 @@ function validateUserLogin(req, res, next) {
 }
 
 module.exports = {
-  validateUserRegistration,
-  validateUserLogin,
+  taskCreateValidation,
+  taskTimeUpdateValidation,
 };

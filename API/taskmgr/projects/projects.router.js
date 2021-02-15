@@ -2,17 +2,24 @@ const { Router } = require("express");
 const asyncWrapper = require("../../../utils/asyncWrapper");
 const ProjectsControllers = require("./projects.controllers");
 const authorization = require("../../middlewares/authorization");
+const {
+  projectCreateValidation,
+  projectUpdateNameValidation,
+  addParticipantToProjectValidation,
+} = require("./projectJoiValidation");
 
 const projectsRouter = Router();
 
 projectsRouter.post(
   "/create",
+  projectCreateValidation,
   authorization,
   asyncWrapper(ProjectsControllers.createProject)
 );
 
 projectsRouter.patch(
   "/:projectId/add-participant",
+  addParticipantToProjectValidation,
   authorization,
   asyncWrapper(ProjectsControllers.addUserToProject)
 );
@@ -25,6 +32,7 @@ projectsRouter.delete(
 
 projectsRouter.patch(
   "/:projectId/change-name",
+  projectUpdateNameValidation,
   authorization,
   asyncWrapper(ProjectsControllers.updateName)
 );
