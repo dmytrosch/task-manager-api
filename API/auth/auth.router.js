@@ -4,6 +4,7 @@ const {
   registration,
   userLogin,
   userLogout,
+  verifyEmail,
 } = require("../auth/auth.controller");
 
 const {
@@ -12,6 +13,7 @@ const {
 } = require("./auth.validators");
 
 const asynWrapper = require("../../utils/asyncWrapper");
+const asyncWrapper = require("../../utils/asyncWrapper");
 
 const authRouter = Router();
 
@@ -24,5 +26,7 @@ authRouter.post(
 authRouter.post("/login", validateUserLogin, asynWrapper(userLogin));
 
 authRouter.post("/logout", authorization, asynWrapper(userLogout));
+
+authRouter.get('/verify/:verificationToken', asyncWrapper(verifyEmail));
 
 module.exports = authRouter;

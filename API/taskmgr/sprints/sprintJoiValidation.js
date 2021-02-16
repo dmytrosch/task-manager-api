@@ -10,9 +10,8 @@ function sprintCreateValidation(req, res, next) {
 
   const result = schema.validate(req.body);
 
-  const { message } = result.error;
-
   if (result.error) {
+    const { message } = result.error;
     throw new JoiValidationError(message);
   }
   next();
@@ -25,9 +24,8 @@ function sprintUpdateNameValidation(req, res, next) {
 
   const result = schema.validate(req.body);
 
-  const { message } = result.error;
-
   if (result.error) {
+    const { message } = result.error;
     throw new JoiValidationError(message);
   }
   next();

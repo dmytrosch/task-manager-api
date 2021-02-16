@@ -12,7 +12,8 @@ const userSchema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   token: { type: String, default: "" },
-  projectIds: [{ type: ObjectId, ref: "Project"}],
+  projectIds: [{ type: ObjectId, ref: "Project" }],
+  verificationToken: String,
 });
 
 userSchema.statics.brcPassHash = brcPassHash;
@@ -23,7 +24,9 @@ userSchema.statics.verifyToken = verifyToken;
 userSchema.methods.addProject = addProject;
 userSchema.methods.removeProjectId = removeProjectId;
 userSchema.statics.removeProjectFromParticipants = removeProjectFromParticipants;
-// userSchema.methods.addToProject = addToProject;
+userSchema.methods.createVerificationToken = createVerificationToken;
+userSchema.methods.removeVerificationToken = removeVerificationToken;
+userSchema.statics.findByVerificationToken = findByVerificationToken;
 
 function brcPassHash(password) {
   return bcrypt.hash(password, 3);
@@ -80,17 +83,28 @@ async function removeProjectFromParticipants(projectId) {
     { $pull: { projectIds: { $in: projectId } } }
   );
 }
-// async function addToProject(projectId) {
-//   return userModel.findByIdAndUpdate(
-//     this._id,
-//     {
-//       $push: { projectIds: projectId },
-//     },
-//     {
-//       new: true,
-//     }
-//   );
-// }
+
+async function createVerificationToken(verificationToken) {
+  return userModel.findByIdAndUpdate(
+    this._id,
+    {
+      verificationToken,
+    },
+    {
+      new: true,
+    }
+  );
+}
+
+async function findByVerificationToken(verificationToken) {
+  return this.findOne({ verificationToken });
+}
+
+async function removeVerificationToken() {
+  return userModel.findByIdAndUpdate(this._id, {
+    verificationToken: null,
+  });
+}
 
 const userModel = mongoose.model("User", userSchema);
 
