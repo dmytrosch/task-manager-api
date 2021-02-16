@@ -102,6 +102,9 @@ class SprintsControllers {
     return res.status(200).send({
       id: updatedSprint._id,
       name: updatedSprint.name,
+      startAt: updatedSprint.startAt,
+      finishedAt: updatedSprint.finishedAt,
+      timeDifference: updatedSprint.timeDifference,
     });
   }
 }
