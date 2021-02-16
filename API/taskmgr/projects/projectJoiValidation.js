@@ -3,7 +3,7 @@ const { JoiValidationError } = require("../../../helpers/error.helpers");
 
 function projectCreateValidation(req, res, next) {
   const schema = Joi.object({
-    name: Joi.string().min(1).email().required(),
+    name: Joi.string().min(1).required(),
     description: Joi.string().min(1).required(),
   });
 

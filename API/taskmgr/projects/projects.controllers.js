@@ -1,10 +1,13 @@
-const projectModel = require('./projects.model');
-const userModel = require('../../users/users.model');
+const projectModel = require("./projects.model");
+const userModel = require("../../users/users.model");
+const sprintModel = require("../sprints/sprints.model");
+const taskModel = require("../tasks/tasks.model");
 const {
   Types: { ObjectId },
-} = require('mongoose');
+  Promise,
+} = require("mongoose");
 
-const { ConflictError } = require('../../../helpers/error.helpers');
+const { ConflictError } = require("../../../helpers/error.helpers");
 
 class ProjectsControllers {
   async createProject(req, res) {
@@ -40,7 +43,8 @@ class ProjectsControllers {
 
     const project = await projectModel.findById(projectId);
 
-    const isOwner = project.owner.toString() === user._id.toString() ? true : false;
+    const isOwner =
+      project.owner.toString() === user._id.toString() ? true : false;
 
     const [result] = await projectModel.aggregate([
       {
@@ -48,22 +52,22 @@ class ProjectsControllers {
       },
       {
         $lookup: {
-          from: 'users',
-          localField: 'participantsIds',
-          foreignField: '_id',
-          as: 'participants',
+          from: "users",
+          localField: "participantsIds",
+          foreignField: "_id",
+          as: "participants",
         },
       },
-      { $unset: ['participantsIds'] },
+      { $unset: ["participantsIds"] },
       {
         $lookup: {
-          from: 'sprints',
-          localField: 'sprintsIds',
-          foreignField: '_id',
-          as: 'sprints',
+          from: "sprints",
+          localField: "sprintsIds",
+          foreignField: "_id",
+          as: "sprints",
         },
       },
-      { $unset: ['sprintsIds'] },
+      { $unset: ["sprintsIds"] },
       {
         $project: {
           name: 1,
@@ -90,17 +94,17 @@ class ProjectsControllers {
 
     const userToAdd = await userModel.userByEmail(email);
     if (!userToAdd) {
-      return res.status(404).json({ message: 'User is not found' });
+      return res.status(404).json({ message: "User is not found" });
     }
 
-    const isProjectExist = userToAdd.projectIds.some(item => {
+    const isProjectExist = userToAdd.projectIds.some((item) => {
       const idToString = item.toString();
 
       return idToString === projectId;
     });
 
     if (isProjectExist) {
-      throw new ConflictError('User already in project');
+      throw new ConflictError("User already in project");
     }
     await userToAdd.addProject(projectId);
     await projectModel.addUserToProject(projectId, userToAdd._id);
@@ -111,15 +115,36 @@ class ProjectsControllers {
     const { projectId } = req.params;
     const { user } = req;
 
-    const project = user.projectIds.find(project => project == projectId);
+    const project = user.projectIds.find((project) => project == projectId);
     if (!project) {
-      return res.status(404).json({ message: 'Project is not found!' });
+      return res.status(404).json({ message: "Project is not found!" });
     }
-    await user.removeProjectId(project);
-    await projectModel.removeProjectFromColletion(project);
-    await userModel.removeProjectFromParticipants(projectId);
 
-    return res.status(204).json({ message: 'deleted' });
+    const sprintArray = await projectModel.find(project);
+    const allSprints = sprintArray.forEach(async (item) => {
+      console.log(item.sprintsIds);
+      return item.sprintsIds;
+    });
+    console.log(allSprints);
+
+    const allTasks = await Promise.all(
+      allSprints.forEach(async (item) => {
+        console.log(item);
+      })
+    );
+    // console.log(allTasks);
+
+    // console.log(allSprintId);
+    // const [taskArray] = await sprintModel.find(allSprintId);
+    // console.log(taskArray);
+    // const [allTasks] = taskArray.tasksIds;
+    // console.log("ID tasks", allTasks);
+
+    // await user.removeProjectId(project);
+    // await projectModel.removeProjectFromColletion(project);
+    // await userModel.removeProjectFromParticipants(projectId);
+
+    return res.status(204).json({ message: "deleted" });
   }
 
   async updateName(req, res) {
@@ -128,7 +153,7 @@ class ProjectsControllers {
 
     const updatedProject = await projectModel.updateProjectName(
       projectId,
-      name,
+      name
     );
 
     return res.status(200).send({
