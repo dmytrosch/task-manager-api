@@ -60,15 +60,15 @@ class TasksControllers {
 
     const response = await taskModel.find({});
 
-    // const z = response.filter(async (item) => {
+    const nameToSearch = response.filter((item) => {
+      const lowerCaseName = item.name.toLowerCase();
+      const querySearchName = taskName.toLowerCase();
+      const name = lowerCaseName.includes(querySearchName);
+      return name;
+    });
 
-    //   const q = await item.name.includes(taskName);
-    //   console.log(q);
-    //   return q;
-    // });
-
-    // console.log(z);
-    return res.status(200).json(response);
+    console.log(nameToSearch);
+    return res.status(200).json(nameToSearch);
   }
 }
 
