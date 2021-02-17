@@ -45,7 +45,7 @@ async function userLogin(req, res) {
   }
 
   if(user.verificationToken !== null){
-    throw new UnauthorizedError("Email not verified!");
+    throw new UnauthorizedError("Email is not verified!");
   }
 
   const token = await user.checkUser(password);
