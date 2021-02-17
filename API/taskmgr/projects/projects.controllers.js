@@ -114,26 +114,30 @@ class ProjectsControllers {
       return res.status(404).json({ message: "Project is not found!" });
     }
 
-    // const projectObject = await projectModel.findById(project);
-    // let tasksIds = [];
+    const sprints = await sprintModel.find(
+      {},
+      {
+        owner: project,
+      }
+    );
 
-    // await Promise.all(
-    //   projectObject.sprintsIds.forEach(async (item) => {
-    //     console.log("first forEach");
-    //     const sprint = await sprintModel.findById(item);
+    let tasksIds = [];
+    sprints.forEach(async (item) => {
+      const sprintItem = await sprintModel.findById(item);
+      const [allTasksIds] = sprintItem.tasksIds;
+      if (!allTasksIds) {
+        return;
+      }
+      tasksIds.push(allTasksIds);
 
-    //     tasksIds = sprint.tasksIds;
+      return tasksIds;
+    });
+    const tasks = await taskModel.find({}, tasksIds);
 
-    //     await sprint.remove();
-    //   })
-    // );
+    await taskModel.deleteMany({}, { _id: tasks._id });
 
-    // await Promise.all(
-    //   tasksIds.forEach(async (item) => {
-    //     console.log("second forEach");
-    //     await taskModel.findByIdAndDelete(item);
-    //   })
-    // );
+
+    await sprintModel.deleteMany({}, { _id: sprints });
 
     await user.removeProjectId(project);
     await projectModel.removeProjectFromColletion(project);
