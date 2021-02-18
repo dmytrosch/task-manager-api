@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const sprintModel = require('../sprints/sprints.model');
-const {ConflictError} = require('../../../helpers/error.helpers');
+const mongoose = require("mongoose");
+const sprintModel = require("../sprints/sprints.model");
+const { ConflictError } = require("../../../helpers/error.helpers");
 const { Schema } = mongoose;
 
 const taskSchema = new Schema({
@@ -11,6 +11,7 @@ const taskSchema = new Schema({
 
 taskSchema.statics.removeTask = removeTask;
 taskSchema.statics.incrementSpendedTime = incrementSpendedTime;
+taskSchema.statics.updateTaskName = updateTaskName;
 
 async function removeTask(taskId) {
   return this.findByIdAndDelete(taskId);
@@ -30,23 +31,31 @@ async function incrementSpendedTime(taskId, value) {
     },
   ]);
 
-  const {timeDifference: timeDiff} = result;
+  const { timeDifference: timeDiff } = result;
 
   const timeDiffInHours = timeDiff * 24;
 
   const updatedTime = task.spendedTime + value;
 
   if (updatedTime >= timeDiffInHours) {
-    throw new ConflictError('Spended time more than planned time');
+    throw new ConflictError("Spended time more than planned time");
   }
 
   return this.findByIdAndUpdate(
     taskId,
     { $set: { spendedTime: updatedTime } },
-    { new: true },
+    { new: true }
   );
 }
 
-const taskModel = mongoose.model('Task', taskSchema);
+async function updateTaskName(taskId, newName) {
+  return this.findByIdAndUpdate(
+    taskId,
+    { $set: { name: newName } },
+    { new: true }
+  );
+}
+
+const taskModel = mongoose.model("Task", taskSchema);
 
 module.exports = taskModel;
