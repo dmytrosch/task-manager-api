@@ -56,9 +56,15 @@ class TasksControllers {
   }
 
   async searchByName(req, res) {
-    const { taskName } = req.params;
+    const { taskName, sprintId } = req.params;
 
-    const response = await taskModel.find({});
+    const sprint = await sprintModel.findById(sprintId);
+
+    console.log(sprint.tasksIds);
+
+    const response = await taskModel.find({ _id: { $in: sprint.tasksIds } });
+
+    console.log(response);
 
     const nameToSearch = response.filter((item) => {
       const lowerCaseName = item.name.toLowerCase();
@@ -66,8 +72,6 @@ class TasksControllers {
       const name = lowerCaseName.includes(querySearchName);
       return name;
     });
-
-    console.log(nameToSearch);
     return res.status(200).json(nameToSearch);
   }
 }

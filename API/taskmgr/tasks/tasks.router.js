@@ -30,7 +30,7 @@ tasksRouter.patch(
 );
 
 tasksRouter.get(
-  "/:taskName",
+  "/:sprintId/:taskName",
   autorization,
   asyncWrapper(TasksControllers.searchByName)
 );
