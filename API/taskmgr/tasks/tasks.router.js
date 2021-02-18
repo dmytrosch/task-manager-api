@@ -29,4 +29,10 @@ tasksRouter.patch(
   asyncWrapper(TasksControllers.updateSpendedTime)
 );
 
+tasksRouter.get(
+  "/:sprintId/:taskName",
+  autorization,
+  asyncWrapper(TasksControllers.searchByName)
+);
+
 module.exports = tasksRouter;

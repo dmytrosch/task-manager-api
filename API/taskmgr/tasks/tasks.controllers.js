@@ -1,9 +1,9 @@
-const taskModel = require('./tasks.model');
-const sprintModel = require('../sprints/sprints.model');
+const taskModel = require("./tasks.model");
+const sprintModel = require("../sprints/sprints.model");
 
 const {
   Types: { ObjectId },
-} = require('mongoose');
+} = require("mongoose");
 
 class TasksControllers {
   async createTask(req, res) {
@@ -32,7 +32,7 @@ class TasksControllers {
     await taskModel.removeTask(taskObjId);
     await sprintModel.removeTaskFromSprint(taskObjId);
 
-    return res.status(204).send({ message: 'deleted' });
+    return res.status(204).send({ message: "deleted" });
   }
 
   async updateSpendedTime(req, res) {
@@ -44,17 +44,44 @@ class TasksControllers {
 
     const updatedTask = await taskModel.incrementSpendedTime(
       taskObjId,
-      hoursNumber,
+      hoursNumber
     );
 
-    return res
-      .status(200)
-      .send({
-        id: updatedTask._id,
-        name: updatedTask.name,
-        plannedTime: updatedTask.plannedTime,
-        spendedTime: updatedTask.spendedTime,
+    return res.status(200).send({
+      id: updatedTask._id,
+      name: updatedTask.name,
+      plannedTime: updatedTask.plannedTime,
+      spendedTime: updatedTask.spendedTime,
+    });
+  }
+
+  async searchByName(req, res) {
+    const { taskName, sprintId } = req.params;
+
+    const sprint = await sprintModel.findById(sprintId);
+
+    const response = await taskModel.find({ _id: { $in: sprint.tasksIds } });
+
+    const nameToSearch = response
+      .filter((item) => {
+        const lowerCaseName = item.name.toLowerCase();
+        const querySearchName = taskName.toLowerCase();
+        const name = lowerCaseName.includes(querySearchName);
+        console.log(name);
+
+        return name;
+      })
+      .map((item) => {
+        return {
+          id: item.id,
+          name: item.name,
+          plannedTime: item.plannedTime,
+          spendedTime: item.spendedTime,
+        };
       });
+
+    console.log(nameToSearch);
+    return res.status(200).json(nameToSearch);
   }
 }
 
