@@ -60,18 +60,27 @@ class TasksControllers {
 
     const sprint = await sprintModel.findById(sprintId);
 
-    console.log(sprint.tasksIds);
-
     const response = await taskModel.find({ _id: { $in: sprint.tasksIds } });
 
-    console.log(response);
+    const nameToSearch = response
+      .filter((item) => {
+        const lowerCaseName = item.name.toLowerCase();
+        const querySearchName = taskName.toLowerCase();
+        const name = lowerCaseName.includes(querySearchName);
+        console.log(name);
 
-    const nameToSearch = response.filter((item) => {
-      const lowerCaseName = item.name.toLowerCase();
-      const querySearchName = taskName.toLowerCase();
-      const name = lowerCaseName.includes(querySearchName);
-      return name;
-    });
+        return name;
+      })
+      .map((item) => {
+        return {
+          id: item.id,
+          name: item.name,
+          plannedTime: item.plannedTime,
+          spendedTime: item.spendedTime,
+        };
+      });
+
+    console.log(nameToSearch);
     return res.status(200).json(nameToSearch);
   }
 }
