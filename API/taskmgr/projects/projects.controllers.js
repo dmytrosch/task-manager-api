@@ -1,12 +1,13 @@
 const projectModel = require("./projects.model");
 const userModel = require("../../users/users.model");
+const sprintModel = require("../sprints/sprints.model");
+const taskModel = require("../tasks/tasks.model");
 const {
   Types: { ObjectId },
+  Promise,
 } = require("mongoose");
 
 const { ConflictError } = require("../../../helpers/error.helpers");
-const sprintModel = require("../sprints/sprints.model");
-const taskModel = require("../tasks/tasks.model");
 
 class ProjectsControllers {
   async createProject(req, res) {
