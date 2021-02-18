@@ -83,6 +83,20 @@ class TasksControllers {
     console.log(nameToSearch);
     return res.status(200).json(nameToSearch);
   }
+
+  async updateName(req, res) {
+    const { taskId } = req.params;
+    const { name } = req.body;
+
+    const updatedTask = await taskModel.updateTaskName(taskId, name);
+
+    return res.status(200).send({
+      id: updatedTask._id,
+      name: updatedTask.name,
+      plannedTime: updatedTask.plannedTime,
+      spendedTime: updatedTask.spendedTime,
+    });
+  }
 }
 
 module.exports = new TasksControllers();

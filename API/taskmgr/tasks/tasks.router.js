@@ -35,4 +35,10 @@ tasksRouter.get(
   asyncWrapper(TasksControllers.searchByName)
 );
 
+tasksRouter.patch(
+  "/:taskId/change-name",
+  autorization,
+  asyncWrapper(TasksControllers.updateName)
+);
+
 module.exports = tasksRouter;
