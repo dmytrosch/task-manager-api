@@ -67,7 +67,6 @@ class TasksControllers {
         const lowerCaseName = item.name.toLowerCase();
         const querySearchName = taskName.toLowerCase();
         const name = lowerCaseName.includes(querySearchName);
-        console.log(name);
 
         return name;
       })
@@ -80,7 +79,6 @@ class TasksControllers {
         };
       });
 
-    console.log(nameToSearch);
     return res.status(200).json(nameToSearch);
   }
 
