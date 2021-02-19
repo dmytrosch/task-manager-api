@@ -1,5 +1,6 @@
 const taskModel = require("./tasks.model");
 const sprintModel = require("../sprints/sprints.model");
+const { JoiValidationError } = require("../../../helpers/error.helpers");
 
 const {
   Types: { ObjectId },
@@ -94,6 +95,36 @@ class TasksControllers {
       plannedTime: updatedTask.plannedTime,
       spendedTime: updatedTask.spendedTime,
     });
+  }
+
+  async getTasks(req, res) {
+    const { page } = req.query;
+    const { sprintId } = req.params;
+
+    const sprint = await sprintModel.findById(sprintId);
+
+    const tasksIds = sprint.tasksIds;
+
+    const tasks = await taskModel.find({ _id: tasksIds });
+
+    const queryParams = { _id: tasks };
+    const options = {
+      page: Number(page),
+      limit: 4,
+    };
+
+    if (options.page < 0) {
+      throw new JoiValidationError("Page can't be negative");
+    }
+
+    await taskModel.paginate(
+      queryParams,
+      options,
+      function methodName(err, result) {
+        const { docs } = result;
+        return res.status(200).send(docs);
+      }
+    );
   }
 }
 

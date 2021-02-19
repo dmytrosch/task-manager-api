@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const sprintModel = require("../sprints/sprints.model");
 const { ConflictError } = require("../../../helpers/error.helpers");
 const { Schema } = mongoose;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const taskSchema = new Schema({
   name: { type: String, required: true },
@@ -12,6 +13,9 @@ const taskSchema = new Schema({
 taskSchema.statics.removeTask = removeTask;
 taskSchema.statics.incrementSpendedTime = incrementSpendedTime;
 taskSchema.statics.updateTaskName = updateTaskName;
+
+taskSchema.plugin(mongoosePaginate);
+
 
 async function removeTask(taskId) {
   return this.findByIdAndDelete(taskId);
