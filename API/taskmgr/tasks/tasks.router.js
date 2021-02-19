@@ -41,4 +41,10 @@ tasksRouter.patch(
   asyncWrapper(TasksControllers.updateName)
 );
 
+tasksRouter.get(
+  '/:sprintId',
+  autorization,
+  asyncWrapper(TasksControllers.getTasks)
+)
+
 module.exports = tasksRouter;

@@ -86,13 +86,18 @@ class SprintsControllers {
           tasks: {
             _id: 1,
             name: 1,
-            planedTime: 1,
+            plannedTime: 1,
+            spendedTime: 1,
           },
         },
       },
     ]);
 
-    return res.status(200).send({ ...result, isOwner });
+    const totalPages = {totalPages: Math.ceil(result.tasks.length / 4)};
+
+    const firstSetTasks = {tasks: result.tasks.slice(0, 4)};
+
+    return res.status(200).send({ ...result, ...firstSetTasks, ...totalPages, page: 1, isOwner });
   }
 
   async updateName(req, res) {
