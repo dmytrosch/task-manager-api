@@ -84,18 +84,6 @@ async function removeProjectFromParticipants(projectId) {
   );
 }
 
-async function createVerificationToken(verificationToken) {
-  return userModel.findByIdAndUpdate(
-    this._id,
-    {
-      verificationToken,
-    },
-    {
-      new: true,
-    }
-  );
-}
-
 async function findByVerificationToken(verificationToken) {
   return this.findOne({ verificationToken });
 }

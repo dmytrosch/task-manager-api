@@ -54,17 +54,16 @@ module.exports = class taskMgrServer {
   }
 
   errorHandling() {
+    let status = 500;
     this.server.use((error, req, res, next) => {
-      if (error instanceof ConflictError) {
-        return res.status(error.status).send({ message: error.message });
+      if (
+        error instanceof ConflictError ||
+        error instanceof UnauthorizedError ||
+        error instanceof JoiValidationError
+      ) {
+        status = error.status;
       }
-      if (error instanceof UnauthorizedError) {
-        return res.status(error.status).send({ message: error.message });
-      }
-      if (error instanceof JoiValidationError) {
-        return res.status(error.status).send({ message: error.message });
-      }
-      return res.status(500).send({ message: error.message });
+      return res.status(status).send({ message: error.message });
     });
   }
 

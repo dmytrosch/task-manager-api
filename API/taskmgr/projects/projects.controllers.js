@@ -137,14 +137,13 @@ class ProjectsControllers {
 
     await taskModel.deleteMany({}, { _id: tasks._id });
 
-
     await sprintModel.deleteMany({}, { _id: sprints });
 
     await user.removeProjectId(project);
     await projectModel.removeProjectFromColletion(project);
     await userModel.removeProjectFromParticipants(projectId);
 
-    return res.status(204).json({ message: "deleted" });
+    return res.status(204).end();
   }
 
   async updateName(req, res) {

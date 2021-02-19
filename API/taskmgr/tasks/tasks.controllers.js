@@ -33,7 +33,7 @@ class TasksControllers {
     await taskModel.removeTask(taskObjId);
     await sprintModel.removeTaskFromSprint(taskObjId);
 
-    return res.status(204).send({ message: "deleted" });
+    return res.status(204).end();
   }
 
   async updateSpendedTime(req, res) {

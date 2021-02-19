@@ -3,8 +3,8 @@ const {
   ConflictError,
   UnauthorizedError,
 } = require("../../helpers/error.helpers");
-const uuid = require('uuid');
-const path = require('path');
+const uuid = require("uuid");
+const path = require("path");
 
 const sendEmailVerification = require("../../utils/send.email.verification");
 
@@ -17,19 +17,17 @@ async function registration(req, res) {
   }
 
   const passwordHash = await userModel.brcPassHash(password);
+  const verificationToken = uuid.v4();
 
   const user = new userModel({
     email: req.body.email,
     password: passwordHash,
+    verificationToken: verificationToken,
   });
 
   await user.save();
 
-  const verificationToken = uuid.v4();
-
-  await user.createVerificationToken(verificationToken);
-
-  await sendEmailVerification(user.email, verificationToken);
+  await sendEmailVerification(user.email, user.verificationToken);
 
   return res.status(201).json({
     message: "User succssuly registraited",
@@ -44,7 +42,7 @@ async function userLogin(req, res) {
     throw new UnauthorizedError("Wrong credentials");
   }
 
-  if(user.verificationToken !== null){
+  if (user.verificationToken !== null) {
     throw new UnauthorizedError("Email is not verified!");
   }
 
@@ -69,7 +67,7 @@ async function userLogout(req, res) {
     return res.status(400).json({ message: "Not found" });
   }
 
-  return res.status(204).send();
+  return res.status(204).end();
 }
 
 async function verifyEmail(req, res) {
@@ -80,12 +78,16 @@ async function verifyEmail(req, res) {
   );
 
   if (!verifiedUser) {
-    return res.status(404).sendFile(path.join(__dirname, '../../static/html/404.html'));
+    return res
+      .status(404)
+      .sendFile(path.join(__dirname, "../../static/html/404.html"));
   }
 
   await verifiedUser.removeVerificationToken();
 
-  return res.status(200).sendFile(path.join(__dirname, '../../static/html/redirect.html'));
+  return res
+    .status(200)
+    .sendFile(path.join(__dirname, "../../static/html/redirect.html"));
 }
 
 module.exports = {
