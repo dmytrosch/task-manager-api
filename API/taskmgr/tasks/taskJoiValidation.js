@@ -29,8 +29,22 @@ function taskTimeUpdateValidation(req, res, next) {
   }
   next();
 }
+function taskUpdateNameValidation(req, res, next) {
+  const schema = Joi.object({
+    name: Joi.string().min(1).required(),
+  });
+
+  const result = schema.validate(req.body);
+
+  if (result.error) {
+    const { message } = result.error;
+    throw new JoiValidationError(message);
+  }
+  next();
+}
 
 module.exports = {
   taskCreateValidation,
   taskTimeUpdateValidation,
+  taskUpdateNameValidation,
 };

@@ -5,6 +5,7 @@ const TasksControllers = require("./tasks.controllers");
 const {
   taskCreateValidation,
   taskTimeUpdateValidation,
+  taskUpdateNameValidation,
 } = require("./taskJoiValidation");
 
 const tasksRouter = Router();
@@ -37,14 +38,15 @@ tasksRouter.get(
 
 tasksRouter.patch(
   "/:taskId/change-name",
+  taskUpdateNameValidation,
   autorization,
   asyncWrapper(TasksControllers.updateName)
 );
 
 tasksRouter.get(
-  '/:sprintId',
+  "/:sprintId",
   autorization,
   asyncWrapper(TasksControllers.getTasks)
-)
+);
 
 module.exports = tasksRouter;
