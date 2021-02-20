@@ -7,10 +7,9 @@ const {
   verifyEmail,
 } = require("../auth/auth.controller");
 
-const {
-  validateUserRegistration,
-  validateUserLogin,
-} = require("./auth.validators");
+const { registerSchema, loginSchema } = require("./auth.validators");
+
+const validator = require("../../helpers/joi.validation.handler");
 
 const asynWrapper = require("../../utils/asyncWrapper");
 const asyncWrapper = require("../../utils/asyncWrapper");
@@ -19,14 +18,14 @@ const authRouter = Router();
 
 authRouter.post(
   "/register",
-  validateUserRegistration,
+  validator(registerSchema),
   asynWrapper(registration)
 );
 
-authRouter.post("/login", validateUserLogin, asynWrapper(userLogin));
+authRouter.post("/login", validator(loginSchema), asynWrapper(userLogin));
 
 authRouter.post("/logout", authorization, asynWrapper(userLogout));
 
-authRouter.get('/verify/:verificationToken', asyncWrapper(verifyEmail));
+authRouter.get("/verify/:verificationToken", asyncWrapper(verifyEmail));
 
 module.exports = authRouter;

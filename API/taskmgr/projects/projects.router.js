@@ -3,23 +3,25 @@ const asyncWrapper = require("../../../utils/asyncWrapper");
 const ProjectsControllers = require("./projects.controllers");
 const authorization = require("../../middlewares/authorization");
 const {
-  projectCreateValidation,
-  projectUpdateNameValidation,
-  addParticipantToProjectValidation,
+  projectCreateSchema,
+  projectUpdateNameSchema,
+  addParticipantToProjectSchema,
 } = require("./projectJoiValidation");
+
+const validator = require("../../../helpers/joi.validation.handler.js");
 
 const projectsRouter = Router();
 
 projectsRouter.post(
   "/create",
-  projectCreateValidation,
+  validator(projectCreateSchema),
   authorization,
   asyncWrapper(ProjectsControllers.createProject)
 );
 
 projectsRouter.patch(
   "/:projectId/add-participant",
-  addParticipantToProjectValidation,
+  validator(addParticipantToProjectSchema),
   authorization,
   asyncWrapper(ProjectsControllers.addUserToProject)
 );
@@ -32,7 +34,7 @@ projectsRouter.delete(
 
 projectsRouter.patch(
   "/:projectId/change-name",
-  projectUpdateNameValidation,
+  validator(projectUpdateNameSchema),
   authorization,
   asyncWrapper(ProjectsControllers.updateName)
 );

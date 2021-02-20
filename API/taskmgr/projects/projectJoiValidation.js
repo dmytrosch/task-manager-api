@@ -1,51 +1,20 @@
 const Joi = require("joi");
-const { JoiValidationError } = require("../../../helpers/error.helpers");
 
-function projectCreateValidation(req, res, next) {
-  const schema = Joi.object({
-    name: Joi.string().min(1).required(),
-    description: Joi.string().min(1).required(),
-  });
+const projectCreateSchema = Joi.object({
+  name: Joi.string().min(1).required(),
+  description: Joi.string().min(1).required(),
+});
 
-  const result = schema.validate(req.body);
+const projectUpdateNameSchema = Joi.object({
+  name: Joi.string().min(1).required(),
+});
 
-  if (result.error) {
-    const { message } = result.error;
-    throw new JoiValidationError(message);
-  }
-  next();
-}
-
-function projectUpdateNameValidation(req, res, next) {
-  const schema = Joi.object({
-    name: Joi.string().min(1).required(),
-  });
-
-  const result = schema.validate(req.body);
-
-  if (result.error) {
-    const { message } = result.error;
-    throw new JoiValidationError(message);
-  }
-  next();
-}
-
-function addParticipantToProjectValidation(req, res, next) {
-  const schema = Joi.object({
-    email: Joi.string().min(6).email().required(),
-  });
-
-  const result = schema.validate(req.body);
-
-  if (result.error) {
-    const { message } = result.error;
-    throw new JoiValidationError(message);
-  }
-  next();
-}
+const addParticipantToProjectSchema = Joi.object({
+  email: Joi.string().min(6).email().required(),
+});
 
 module.exports = {
-  projectCreateValidation,
-  projectUpdateNameValidation,
-  addParticipantToProjectValidation,
+  projectCreateSchema,
+  projectUpdateNameSchema,
+  addParticipantToProjectSchema,
 };

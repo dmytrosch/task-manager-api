@@ -1,50 +1,20 @@
 const Joi = require("joi");
-const { JoiValidationError } = require("../../../helpers/error.helpers");
 
-function taskCreateValidation(req, res, next) {
-  const schema = Joi.object({
-    name: Joi.string().min(1).required(),
-    plannedTime: Joi.number().required(),
-  });
+const taskCreateSchema = Joi.object({
+  name: Joi.string().min(1).required(),
+  plannedTime: Joi.number().required(),
+});
 
-  const result = schema.validate(req.body);
+const taskUpdateNameSchema = Joi.object({
+  name: Joi.string().min(1).required(),
+});
 
-  if (result.error) {
-    const { message } = result.error;
-    throw new JoiValidationError(message);
-  }
-  next();
-}
-
-function taskTimeUpdateValidation(req, res, next) {
-  const schema = Joi.object({
-    hours: Joi.number(),
-  });
-
-  const result = schema.validate(req.body);
-
-  if (result.error) {
-    const { message } = result.error;
-    throw new JoiValidationError(message);
-  }
-  next();
-}
-function taskUpdateNameValidation(req, res, next) {
-  const schema = Joi.object({
-    name: Joi.string().min(1).required(),
-  });
-
-  const result = schema.validate(req.body);
-
-  if (result.error) {
-    const { message } = result.error;
-    throw new JoiValidationError(message);
-  }
-  next();
-}
+const taskTimeUpdateSchema = Joi.object({
+  hours: Joi.number(),
+});
 
 module.exports = {
-  taskCreateValidation,
-  taskTimeUpdateValidation,
-  taskUpdateNameValidation,
+  taskCreateSchema,
+  taskUpdateNameSchema,
+  taskTimeUpdateSchema,
 };

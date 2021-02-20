@@ -3,16 +3,18 @@ const autorization = require("../../middlewares/authorization");
 const asyncWrapper = require("../../../utils/asyncWrapper");
 const TasksControllers = require("./tasks.controllers");
 const {
-  taskCreateValidation,
-  taskTimeUpdateValidation,
-  taskUpdateNameValidation,
+  taskCreateSchema,
+  taskUpdateNameSchema,
+  taskTimeUpdateSchema,
 } = require("./taskJoiValidation");
+
+const validator = require("../../../helpers/joi.validation.handler");
 
 const tasksRouter = Router();
 
 tasksRouter.post(
   "/:sprintId/create",
-  taskCreateValidation,
+  validator(taskCreateSchema),
   autorization,
   asyncWrapper(TasksControllers.createTask)
 );
@@ -25,7 +27,7 @@ tasksRouter.delete(
 
 tasksRouter.patch(
   "/:taskId/update-time",
-  taskTimeUpdateValidation,
+  validator(taskTimeUpdateSchema),
   autorization,
   asyncWrapper(TasksControllers.updateSpendedTime)
 );
@@ -38,7 +40,7 @@ tasksRouter.get(
 
 tasksRouter.patch(
   "/:taskId/change-name",
-  taskUpdateNameValidation,
+  validator(taskUpdateNameSchema),
   autorization,
   asyncWrapper(TasksControllers.updateName)
 );
