@@ -24,7 +24,6 @@ userSchema.statics.verifyToken = verifyToken;
 userSchema.methods.addProject = addProject;
 userSchema.methods.removeProjectId = removeProjectId;
 userSchema.statics.removeProjectFromParticipants = removeProjectFromParticipants;
-userSchema.methods.createVerificationToken = createVerificationToken;
 userSchema.methods.removeVerificationToken = removeVerificationToken;
 userSchema.statics.findByVerificationToken = findByVerificationToken;
 
@@ -81,18 +80,6 @@ async function removeProjectFromParticipants(projectId) {
   return this.updateMany(
     { projectIds: projectId },
     { $pull: { projectIds: { $in: projectId } } }
-  );
-}
-
-async function createVerificationToken(verificationToken) {
-  return userModel.findByIdAndUpdate(
-    this._id,
-    {
-      verificationToken,
-    },
-    {
-      new: true,
-    }
   );
 }
 

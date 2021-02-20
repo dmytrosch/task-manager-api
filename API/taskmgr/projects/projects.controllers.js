@@ -92,7 +92,7 @@ class ProjectsControllers {
       return res.status(404).json({ message: "User is not found" });
     }
 
-    const isProjectExist = userToAdd.projectIds.some((item) => {
+    const isProjectExist = userToAdd.projectIds.find((item) => {
       const idToString = item.toString();
 
       return idToString === projectId;
@@ -137,14 +137,13 @@ class ProjectsControllers {
 
     await taskModel.deleteMany({}, { _id: tasks._id });
 
-
     await sprintModel.deleteMany({}, { _id: sprints });
 
     await user.removeProjectId(project);
     await projectModel.removeProjectFromColletion(project);
     await userModel.removeProjectFromParticipants(projectId);
 
-    return res.status(204).json({ message: "deleted" });
+    return res.status(204).end();
   }
 
   async updateName(req, res) {

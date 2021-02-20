@@ -3,15 +3,17 @@ const authorization = require("../../middlewares/authorization");
 const asyncWrapper = require("../../../utils/asyncWrapper");
 const SprintsControllers = require("./sprints.controllers");
 const {
-  sprintCreateValidation,
-  sprintUpdateNameValidation,
+  sprintCreateSchema,
+  sprintUpdateNameSchema,
 } = require("./sprintJoiValidation");
+
+const validator = require("../../../helpers/joi.validation.handler");
 
 const sprintsRouter = Router();
 
 sprintsRouter.post(
   "/:projectId/create",
-  sprintCreateValidation,
+  validator(sprintCreateSchema),
   authorization,
   asyncWrapper(SprintsControllers.createSprint)
 );
@@ -30,7 +32,7 @@ sprintsRouter.get(
 
 sprintsRouter.patch(
   "/:sprintId/change-name",
-  sprintUpdateNameValidation,
+  validator(sprintUpdateNameSchema),
   authorization,
   asyncWrapper(SprintsControllers.updateName)
 );

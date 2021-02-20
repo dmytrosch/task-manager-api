@@ -53,7 +53,7 @@ class SprintsControllers {
     await taskModel.deleteMany({}, { _id: tasksIds });
     await sprintModel.removeSprint(sId);
 
-    return res.status(204).json({ message: "deleted" });
+    return res.status(204).end();
   }
 
   async currentSprint(req, res) {
@@ -93,11 +93,13 @@ class SprintsControllers {
       },
     ]);
 
-    const totalPages = {totalPages: Math.ceil(result.tasks.length / 4)};
+    const totalPages = { totalPages: Math.ceil(result.tasks.length / 4) };
 
-    const firstSetTasks = {tasks: result.tasks.slice(0, 4)};
+    const firstSetTasks = { tasks: result.tasks.slice(0, 4) };
 
-    return res.status(200).send({ ...result, ...firstSetTasks, ...totalPages, page: 1, isOwner });
+    return res
+      .status(200)
+      .send({ ...result, ...firstSetTasks, ...totalPages, page: 1, isOwner });
   }
 
   async updateName(req, res) {
