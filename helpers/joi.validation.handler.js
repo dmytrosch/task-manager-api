@@ -1,4 +1,3 @@
-const Joi = require("joi");
 const { JoiValidationError } = require("./error.helpers");
 
 module.exports = (schema, reqPart = "body") => {
