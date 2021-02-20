@@ -12,7 +12,7 @@ const taskSchema = new Schema({
     date: String,
     wastedTime: Number,
   }],
-  totalWastedTime: Number,
+  totalWastedTime: {type: Number, default: 0,},
 });
 
 taskSchema.statics.removeTask = removeTask;
@@ -61,7 +61,7 @@ async function incrementSpendedTime(taskId, dateId,  value) {
 
   return this.findByIdAndUpdate(
     taskId,
-    { $set: { spendedTime: newSpendedTimeArr } },
+    { $set: { spendedTime: newSpendedTimeArr, totalWastedTime, } },
     { new: true }
   );
 }

@@ -38,14 +38,15 @@ class TasksControllers {
     const newTask = new taskModel({
       name,
       plannedTime,
-      spendedTime
+      spendedTime,
+      totalWastedTime,
     });
 
     await newTask.save();
 
     await sprintModel.addTask(sprintId, newTask._id);
 
-    return res.status(201).send({name, plannedTime, spendedTime});
+    return res.status(201).send({name, plannedTime, spendedTime, totalWastedTime});
   }
 
   async removeTaskfromSprint(req, res) {
@@ -79,6 +80,7 @@ class TasksControllers {
       name: updatedTask.name,
       plannedTime: updatedTask.plannedTime,
       spendedTime: updatedTask.spendedTime,
+      totalWastedTime: updatedTask.totalWastedTime,
     });
   }
 
