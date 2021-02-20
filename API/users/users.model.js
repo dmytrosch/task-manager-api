@@ -24,7 +24,6 @@ userSchema.statics.verifyToken = verifyToken;
 userSchema.methods.addProject = addProject;
 userSchema.methods.removeProjectId = removeProjectId;
 userSchema.statics.removeProjectFromParticipants = removeProjectFromParticipants;
-userSchema.methods.createVerificationToken = createVerificationToken;
 userSchema.methods.removeVerificationToken = removeVerificationToken;
 userSchema.statics.findByVerificationToken = findByVerificationToken;
 

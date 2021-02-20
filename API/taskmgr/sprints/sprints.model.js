@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const {
   Schema,
   Types: { ObjectId },
@@ -9,7 +9,7 @@ const sprintSchema = new Schema({
   startAt: { type: String, required: true },
   finishedAt: { type: String, required: true },
   timeDifference: String,
-  tasksIds: [{ type: ObjectId }],
+  tasksIds: [{ type: ObjectId, ref: "Task" }],
   owner: { type: ObjectId },
 });
 
@@ -31,7 +31,7 @@ async function removeSprint(sprintId) {
 async function removeTaskFromSprint(taskId) {
   return this.updateMany(
     { tasksIds: taskId },
-    { $pull: { tasksIds: { $in: taskId } } },
+    { $pull: { tasksIds: { $in: taskId } } }
   );
 }
 
@@ -39,10 +39,10 @@ async function updateSprintName(sprintId, newName) {
   return this.findByIdAndUpdate(
     sprintId,
     { $set: { name: newName } },
-    { new: true },
+    { new: true }
   );
 }
 
-const sprintModel = mongoose.model('Sprint', sprintSchema);
+const sprintModel = mongoose.model("Sprint", sprintSchema);
 
 module.exports = sprintModel;

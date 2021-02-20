@@ -48,7 +48,9 @@ module.exports = class taskMgrServer {
 
   initMiddlwares() {
     this.server.use(express.json());
-    this.server.use(cors({ origin: `http://localhost:${process.env.PORT}` }));
+    this.server.use(
+      cors({ origin: `http://${process.env.BASE_URL}:${this.SERVER_PORT}` })
+    );
     this.server.use(morgan("dev"));
     console.log("middlewares initialized");
   }

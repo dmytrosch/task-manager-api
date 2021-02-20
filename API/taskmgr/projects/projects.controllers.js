@@ -92,7 +92,7 @@ class ProjectsControllers {
       return res.status(404).json({ message: "User is not found" });
     }
 
-    const isProjectExist = userToAdd.projectIds.some((item) => {
+    const isProjectExist = userToAdd.projectIds.find((item) => {
       const idToString = item.toString();
 
       return idToString === projectId;
