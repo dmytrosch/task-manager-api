@@ -93,13 +93,7 @@ class SprintsControllers {
       },
     ]);
 
-    const totalPages = { totalPages: Math.ceil(result.tasks.length / 4) };
-
-    const firstSetTasks = { tasks: result.tasks.slice(0, 4) };
-
-    return res
-      .status(200)
-      .send({ ...result, ...firstSetTasks, ...totalPages, page: 1, isOwner });
+    return res.status(200).send({ ...result, isOwner });
   }
 
   async updateName(req, res) {
