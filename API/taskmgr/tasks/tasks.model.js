@@ -55,7 +55,7 @@ async function incrementSpendedTime(taskId, dateId,  value) {
 
   const timeDiffInHours = timeDiff * 24;
 
-  if (totalWastedTime >= timeDiffInHours) {
+  if (totalWastedTime > timeDiffInHours) {
     throw new ConflictError("Spended time more than planned time");
   }
 
