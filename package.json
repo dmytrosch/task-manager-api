@@ -1,0 +1,55 @@
+{
+  "name": "taskmgrgoit38",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dmytrosch/task-manager-api.git"
+  },
+  "keywords": [
+    "Task",
+    "manager"
+  ],
+  "author": "GoIT38",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dmytrosch/task-manager-api/issues"
+  },
+  "homepage": "https://github.com/dmytrosch/task-manager-api#readme",
+  "devDependencies": {
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "husky": "^5.0.9",
+    "lint-staged": "^10.5.4",
+    "nodemon": "^2.0.7",
+    "prettier": "^2.2.1"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dateformat": "^4.5.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "joi": "^17.3.0",
+    "jsonwebtoken": "^8.5.1",
+    "luxon": "^1.26.0",
+    "mongoose": "^5.11.12",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.2",
+    "nodemailer": "^6.4.18",
+    "swagger-ui-express": "^4.1.6",
+    "uuid": "^8.3.2"
+  },
+  "lint-staged": {
+    "*.{js, jsx}": [
+      "prettier --write",
+      "git add"
+    ]
+  }
+}
