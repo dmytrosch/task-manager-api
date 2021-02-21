@@ -32,21 +32,27 @@ class TasksControllers {
 
       const id = i;
 
-      spendedTime.push({id, date, wastedTime: 0});
+      spendedTime.push({ id, date, wastedTime: 0 });
     }
 
     const newTask = new taskModel({
       name,
       plannedTime,
       spendedTime,
-      totalWastedTime,
     });
 
     await newTask.save();
 
     await sprintModel.addTask(sprintId, newTask._id);
 
-    return res.status(201).send({name, plannedTime, spendedTime, totalWastedTime});
+    return res
+      .status(201)
+      .send({
+        name,
+        plannedTime,
+        spendedTime,
+        totalWastedTime: newTask.totalWastedTime,
+      });
   }
 
   async removeTaskfromSprint(req, res) {

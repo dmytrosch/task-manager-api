@@ -65,7 +65,7 @@ class SprintsControllers {
     const isOwner =
       sprint.owner.toString() === user._id.toString() ? true : false;
 
-    const [result] = await sprintModel.aggregate([
+    const result = await sprintModel.aggregate([
       {
         $match: { _id },
       },
@@ -93,7 +93,23 @@ class SprintsControllers {
       },
     ]);
 
-    return res.status(200).send({ ...result, isOwner });
+    const [prepearedResult] = result.map(item => {
+      return {
+        id: item._id,
+        name: item.name,
+        tasks: item.tasks.map(task => {
+          return {
+            id: task._id,
+            name: task.name,
+            plannedTime: task.plannedTime,
+            spendedTime: task.spendedTime,
+          }
+        }),
+        isOwner,
+      }
+    });
+
+    return res.status(200).send(prepearedResult);
   }
 
   async updateName(req, res) {
