@@ -41,7 +41,7 @@ class ProjectsControllers {
     const isOwner =
       project.owner.toString() === user._id.toString() ? true : false;
 
-    const [result] = await projectModel.aggregate([
+    const result = await projectModel.aggregate([
       {
         $match: { _id },
       },
@@ -68,6 +68,7 @@ class ProjectsControllers {
           name: 1,
           description: 1,
           participants: {
+            _id: 1,
             email: 1,
           },
           sprints: {
@@ -80,7 +81,30 @@ class ProjectsControllers {
       },
     ]);
 
-    return res.status(200).send({ ...result, isOwner });
+    const [prepearedResult] = result.map(item => {
+      return {
+        id: item._id,
+        name: item.name,
+        description: item.description,
+        participants: item.participants.map(participant => {
+          return {
+            id: participant._id,
+            email: participant.email,
+          }
+        }),
+        sprints: item.sprints.map(sprint => {
+          return {
+            id: sprint._id,
+            name: sprint.name,
+            startAt: sprint.startAt,
+            finishedAt: sprint.finishedAt,
+          }
+        }),
+        isOwner,
+      }
+    });
+
+    return res.status(200).send(prepearedResult);
   }
 
   async addUserToProject(req, res) {

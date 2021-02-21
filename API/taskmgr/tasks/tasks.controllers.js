@@ -1,6 +1,6 @@
 const taskModel = require("./tasks.model");
 const sprintModel = require("../sprints/sprints.model");
-const { JoiValidationError } = require("../../../helpers/error.helpers");
+const { DateTime } = require("luxon");
 
 const {
   Types: { ObjectId },
@@ -11,16 +11,48 @@ class TasksControllers {
     const { name, plannedTime } = req.body;
     const { sprintId } = req.params;
 
+    const sprint = await sprintModel.findById(ObjectId(sprintId));
+
+    const [month, day, year] = sprint.startAt.split("/");
+
+    const sprintDuration = sprint.timeDifference;
+
+    const spendedTime = [];
+
+    for (let i = 0; i <= sprintDuration; i++) {
+      const dayValue = i;
+
+      const yearNum = Number(year);
+      const monthNum = parseInt(month, 10);
+      const dayNum = Number(day);
+
+      const date = DateTime.local(yearNum, monthNum, dayNum)
+        .plus({ days: dayValue })
+        .toISODate();
+
+      const id = i;
+
+      spendedTime.push({ id, date, wastedTime: 0 });
+    }
+
     const newTask = new taskModel({
       name,
       plannedTime,
+      spendedTime,
     });
 
     await newTask.save();
 
     await sprintModel.addTask(sprintId, newTask._id);
 
-    return res.status(201).send({ id: newTask._id, name, plannedTime });
+    return res
+      .status(201)
+      .send({
+        name,
+        plannedTime,
+        spendedTime,
+        totalWastedTime: newTask.totalWastedTime,
+      });
   }
 
   async removeTaskfromSprint(req, res) {
@@ -37,7 +69,7 @@ class TasksControllers {
   }
 
   async updateSpendedTime(req, res) {
-    const { taskId } = req.params;
+    const { taskId, dateId } = req.params;
     const { hours } = req.body;
 
     const taskObjId = ObjectId(taskId);
@@ -45,6 +77,7 @@ class TasksControllers {
 
     const updatedTask = await taskModel.incrementSpendedTime(
       taskObjId,
+      dateId,
       hoursNumber
     );
 
@@ -53,6 +86,7 @@ class TasksControllers {
       name: updatedTask.name,
       plannedTime: updatedTask.plannedTime,
       spendedTime: updatedTask.spendedTime,
+      totalWastedTime: updatedTask.totalWastedTime,
     });
   }
 
@@ -95,36 +129,6 @@ class TasksControllers {
       plannedTime: updatedTask.plannedTime,
       spendedTime: updatedTask.spendedTime,
     });
-  }
-
-  async getTasks(req, res) {
-    const { page } = req.query;
-    const { sprintId } = req.params;
-
-    const sprint = await sprintModel.findById(sprintId);
-
-    const tasksIds = sprint.tasksIds;
-
-    const tasks = await taskModel.find({ _id: tasksIds });
-
-    const queryParams = { _id: tasks };
-    const options = {
-      page: Number(page),
-      limit: 4,
-    };
-
-    if (options.page < 0) {
-      throw new JoiValidationError("Page can't be negative");
-    }
-
-    await taskModel.paginate(
-      queryParams,
-      options,
-      function methodName(err, result) {
-        const { docs } = result;
-        return res.status(200).send(docs);
-      }
-    );
   }
 }
 

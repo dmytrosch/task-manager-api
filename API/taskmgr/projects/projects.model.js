@@ -5,8 +5,6 @@ const {
   Types: { ObjectId },
 } = mongoose;
 
-// const { UnauthorizedError } = require('../../helpers/error.helpers');
-
 const projectSchema = new Schema({
   name: { type: String, required: true },
   description: { type: String },
@@ -45,14 +43,6 @@ async function addUserToProject(projectId, userId) {
   });
 }
 
-// async function getUserProjects (arguments) {
-//     return this.aggregate([
-//         $lookup: {
-//             from: 'projects',
-
-//         }
-//     ]);
-// }
 async function removeProjectFromColletion(id) {
   return this.findByIdAndDelete(id);
 }

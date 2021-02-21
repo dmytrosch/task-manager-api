@@ -26,7 +26,7 @@ tasksRouter.delete(
 );
 
 tasksRouter.patch(
-  "/:taskId/update-time",
+  "/:taskId/:dateId/update-time",
   validator(taskTimeUpdateSchema),
   autorization,
   asyncWrapper(TasksControllers.updateSpendedTime)
@@ -43,12 +43,6 @@ tasksRouter.patch(
   validator(taskUpdateNameSchema),
   autorization,
   asyncWrapper(TasksControllers.updateName)
-);
-
-tasksRouter.get(
-  "/:sprintId",
-  autorization,
-  asyncWrapper(TasksControllers.getTasks)
 );
 
 module.exports = tasksRouter;
