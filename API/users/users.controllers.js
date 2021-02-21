@@ -23,6 +23,7 @@ class UsersControllers {
         id: project._id,
         name: project.name,
         description: project.description,
+        isOwner: project.owner.toString() === _id.toString(),
       }
     });
 
