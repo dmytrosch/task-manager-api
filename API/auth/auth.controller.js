@@ -2,6 +2,7 @@ const userModel = require("../../API/users/users.model");
 const {
   ConflictError,
   UnauthorizedError,
+  NotFoundError,
 } = require("../../helpers/error.helpers");
 const uuid = require("uuid");
 const path = require("path");
@@ -78,16 +79,12 @@ async function verifyEmail(req, res) {
   );
 
   if (!verifiedUser) {
-    return res
-      .status(404)
-      .sendFile(path.join(__dirname, "../../static/html/404.html"));
+    throw new NotFoundError('User not found');
   }
 
   await verifiedUser.removeVerificationToken();
 
-  return res
-    .status(200)
-    .sendFile(path.join(__dirname, "../../static/html/redirect.html"));
+  return res.status(204).end();
 }
 async function resetPasswordRequest(req, res, next) {
   const { email } = req.body;

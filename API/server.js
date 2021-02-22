@@ -17,6 +17,7 @@ const {
   ConflictError,
   UnauthorizedError,
   JoiValidationError,
+  NotFoundError,
 } = require("../helpers/error.helpers");
 
 module.exports = class taskMgrServer {
@@ -49,7 +50,7 @@ module.exports = class taskMgrServer {
   initMiddlwares() {
     this.server.use(express.json());
     this.server.use(
-      cors({ origin: `http://${process.env.BASE_URL}:${this.SERVER_PORT}` })
+      cors({ origin: `${process.env.BASE_URL}:${this.SERVER_PORT}` })
     );
     this.server.use(morgan("dev"));
     console.log("middlewares initialized");
@@ -61,7 +62,8 @@ module.exports = class taskMgrServer {
       if (
         error instanceof ConflictError ||
         error instanceof UnauthorizedError ||
-        error instanceof JoiValidationError
+        error instanceof JoiValidationError || 
+        error instanceof NotFoundError
       ) {
         status = error.status;
       }
