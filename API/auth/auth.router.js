@@ -13,6 +13,7 @@ const {
   registerSchema,
   loginSchema,
   newPasswordSchema,
+  emailSchema,
 } = require("./auth.validators");
 
 const validator = require("../../helpers/joi.validation.handler");
@@ -33,7 +34,11 @@ authRouter.post("/logout", authorization, asyncWrapper(userLogout));
 
 authRouter.get("/verify/:verificationToken", asyncWrapper(verifyEmail));
 
-authRouter.get("/reset-password/request", asyncWrapper(resetPasswordRequest));
+authRouter.get(
+  "/reset-password/request",
+  validator(emailSchema),
+  asyncWrapper(resetPasswordRequest)
+);
 
 authRouter.patch(
   "/reset-password/:resetPasswordToken",
