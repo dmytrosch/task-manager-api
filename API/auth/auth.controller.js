@@ -104,14 +104,6 @@ async function resetPassword(req, res, next) {
   const { resetPasswordToken } = req.params;
   const { password } = req.body;
   const passwordHash = await userModel.brcPassHash(password);
-  console.log(
-    "password: ",
-    password,
-    "hash: ",
-    passwordHash,
-    "Token: ",
-    resetPasswordToken
-  );
   const user = await userModel.findByTokenAndUpdatePassword(
     resetPasswordToken,
     passwordHash
