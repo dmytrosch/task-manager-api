@@ -7,7 +7,7 @@ const {
   Promise,
 } = require("mongoose");
 
-const { ConflictError } = require("../../../helpers/error.helpers");
+const { ConflictError, NotFoundError } = require("../../../helpers/error.helpers");
 
 class ProjectsControllers {
   async createProject(req, res) {
@@ -173,6 +173,12 @@ class ProjectsControllers {
   async updateName(req, res) {
     const { projectId } = req.params;
     const { name } = req.body;
+
+    const isProjectExist = await projectModel.findById(projectId);
+
+    if(!isProjectExist){
+      throw new NotFoundError('Project not found');
+    }
 
     const updatedProject = await projectModel.updateProjectName(
       projectId,
