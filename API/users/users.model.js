@@ -14,6 +14,7 @@ const userSchema = new Schema({
   token: { type: String, default: "" },
   projectIds: [{ type: ObjectId, ref: "Project" }],
   verificationToken: String,
+  resetPasswordToken: String,
 });
 
 userSchema.statics.brcPassHash = brcPassHash;
@@ -26,6 +27,7 @@ userSchema.methods.removeProjectId = removeProjectId;
 userSchema.statics.removeProjectFromParticipants = removeProjectFromParticipants;
 userSchema.methods.removeVerificationToken = removeVerificationToken;
 userSchema.statics.findByVerificationToken = findByVerificationToken;
+userSchema.statics.findByTokenAndUpdatePassword = findByTokenAndUpdatePassword;
 
 function brcPassHash(password) {
   return bcrypt.hash(password, 3);
@@ -91,6 +93,16 @@ async function removeVerificationToken() {
   return userModel.findByIdAndUpdate(this._id, {
     verificationToken: null,
   });
+}
+function findByTokenAndUpdatePassword(
+  resetPasswordToken,
+  newPassword
+) {
+  const toUpdate = {
+    resetPasswordToken: null,
+    password: newPassword,
+  };
+  return this.findOneAndUpdate({ resetPasswordToken }, toUpdate);
 }
 
 const userModel = mongoose.model("User", userSchema);

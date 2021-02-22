@@ -93,7 +93,7 @@ module.exports = class taskMgrServer {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,
-        useFindAndModify: true,
+        useFindAndModify: false,
       });
       console.log("Database connection successful");
     } catch (err) {

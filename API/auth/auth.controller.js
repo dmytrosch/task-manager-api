@@ -5,9 +5,11 @@ const {
   NotFoundError,
 } = require("../../helpers/error.helpers");
 const uuid = require("uuid");
-const path = require("path");
 
-const sendEmailVerification = require("../../utils/send.email.verification");
+const {
+  sendEmailVerification,
+  sendResetPasswordLink,
+} = require("../../utils/emailSender");
 
 async function registration(req, res) {
   const { email, password } = req.body;
@@ -79,7 +81,7 @@ async function verifyEmail(req, res) {
   );
 
   if (!verifiedUser) {
-    throw new NotFoundError('User not found');
+    throw new NotFoundError("User not found");
   }
 
   await verifiedUser.removeVerificationToken();
@@ -88,10 +90,36 @@ async function verifyEmail(req, res) {
 }
 async function resetPasswordRequest(req, res, next) {
   const { email } = req.body;
-  const user = await userModel.userByEmail(email)
-  if (!user){
-    
+  const user = await userModel.userByEmail(email);
+  if (!user) {
+    throw new NotFoundError("User with such email doesn`t exist");
   }
+  const resetPasswordToken = uuid.v4();
+  user.resetPasswordToken = resetPasswordToken;
+  await user.save();
+  await sendResetPasswordLink(user.email, resetPasswordToken);
+  res.status(200).end();
+}
+async function resetPassword(req, res, next) {
+  const { resetPasswordToken } = req.params;
+  const { password } = req.body;
+  const passwordHash = await userModel.brcPassHash(password);
+  console.log(
+    "password: ",
+    password,
+    "hash: ",
+    passwordHash,
+    "Token: ",
+    resetPasswordToken
+  );
+  const user = await userModel.findByTokenAndUpdatePassword(
+    resetPasswordToken,
+    passwordHash
+  );
+  if (!user) {
+    throw new NotFoundError("User not found");
+  }
+  res.status(204).end();
 }
 
 module.exports = {
@@ -100,4 +128,5 @@ module.exports = {
   userLogout,
   verifyEmail,
   resetPasswordRequest,
+  resetPassword,
 };
