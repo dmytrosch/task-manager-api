@@ -62,7 +62,7 @@ module.exports = class taskMgrServer {
       if (
         error instanceof ConflictError ||
         error instanceof UnauthorizedError ||
-        error instanceof JoiValidationError || 
+        error instanceof JoiValidationError ||
         error instanceof NotFoundError
       ) {
         status = error.status;
@@ -93,6 +93,7 @@ module.exports = class taskMgrServer {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,
+        useFindAndModify: true,
       });
       console.log("Database connection successful");
     } catch (err) {
