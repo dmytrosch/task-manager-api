@@ -2,6 +2,8 @@ const taskModel = require("./tasks.model");
 const sprintModel = require("../sprints/sprints.model");
 const { DateTime } = require("luxon");
 
+const {NotFoundError} = require('../../../helpers/error.helpers');
+
 const {
   Types: { ObjectId },
 } = require("mongoose");
@@ -10,6 +12,12 @@ class TasksControllers {
   async createTask(req, res) {
     const { name, plannedTime } = req.body;
     const { sprintId } = req.params;
+
+    const isSprintExist = await sprintModel.findById(sprintId);
+
+    if (!isSprintExist) {
+      throw new NotFoundError("Sprint not found");
+    }
 
     const sprint = await sprintModel.findById(ObjectId(sprintId));
 
@@ -48,6 +56,7 @@ class TasksControllers {
     return res
       .status(201)
       .send({
+        id: newTask._id,
         name,
         plannedTime,
         spendedTime,
@@ -57,6 +66,12 @@ class TasksControllers {
 
   async removeTaskfromSprint(req, res) {
     const { taskId } = req.params;
+
+    const isTaskExist = await taskModel.findById(taskId);
+
+    if (!isTaskExist) {
+      throw new NotFoundError("Task not found");
+    }
 
     const taskObjId = ObjectId(taskId);
 
@@ -71,6 +86,12 @@ class TasksControllers {
   async updateSpendedTime(req, res) {
     const { taskId, dateId } = req.params;
     const { hours } = req.body;
+
+    const isTaskExist = await taskModel.findById(taskId);
+
+    if (!isTaskExist) {
+      throw new NotFoundError("Task not found");
+    }
 
     const taskObjId = ObjectId(taskId);
     const hoursNumber = Number(hours);
@@ -95,6 +116,10 @@ class TasksControllers {
 
     const sprint = await sprintModel.findById(sprintId);
 
+    if (!sprint) {
+      throw new NotFoundError("Sprint not found");
+    }
+
     const response = await taskModel.find({ _id: { $in: sprint.tasksIds } });
 
     const nameToSearch = response
@@ -111,6 +136,7 @@ class TasksControllers {
           name: item.name,
           plannedTime: item.plannedTime,
           spendedTime: item.spendedTime,
+          totalWastedTime: item.totalWastedTime,
         };
       });
 
@@ -128,6 +154,7 @@ class TasksControllers {
       name: updatedTask.name,
       plannedTime: updatedTask.plannedTime,
       spendedTime: updatedTask.spendedTime,
+      totalWastedTime: updatedTask.totalWastedTime,
     });
   }
 }

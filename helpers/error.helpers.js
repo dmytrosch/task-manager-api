@@ -19,8 +19,16 @@ class JoiValidationError extends Error {
   }
 }
 
+class NotFoundError extends Error {
+  constructor(message) {
+    super(message);
+    this.status = 404;
+  }
+}
+
 module.exports = {
   ConflictError,
   UnauthorizedError,
   JoiValidationError,
+  NotFoundError,
 };
