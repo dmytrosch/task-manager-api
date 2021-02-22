@@ -89,10 +89,18 @@ async function verifyEmail(req, res) {
     .status(200)
     .sendFile(path.join(__dirname, "../../static/html/redirect.html"));
 }
+async function resetPasswordRequest(req, res, next) {
+  const { email } = req.body;
+  const user = await userModel.userByEmail(email)
+  if (!user){
+    
+  }
+}
 
 module.exports = {
   registration,
   userLogin,
   userLogout,
   verifyEmail,
+  resetPasswordRequest,
 };

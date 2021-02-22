@@ -4,14 +4,13 @@ const {
   registration,
   userLogin,
   userLogout,
-  verifyEmail,
+  verifyEmail, resetPasswordRequest
 } = require("../auth/auth.controller");
 
 const { registerSchema, loginSchema } = require("./auth.validators");
 
 const validator = require("../../helpers/joi.validation.handler");
 
-const asynWrapper = require("../../utils/asyncWrapper");
 const asyncWrapper = require("../../utils/asyncWrapper");
 
 const authRouter = Router();
@@ -22,10 +21,12 @@ authRouter.post(
   asynWrapper(registration)
 );
 
-authRouter.post("/login", validator(loginSchema), asynWrapper(userLogin));
+authRouter.post("/login", validator(loginSchema), asyncWrapper(userLogin));
 
-authRouter.post("/logout", authorization, asynWrapper(userLogout));
+authRouter.post("/logout", authorization, asyncWrapper(userLogout));
 
 authRouter.get("/verify/:verificationToken", asyncWrapper(verifyEmail));
+
+authRouter.patch('/reset-password/request', asyncWrapper(resetPasswordRequest))
 
 module.exports = authRouter;
