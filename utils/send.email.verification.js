@@ -15,7 +15,7 @@ async function sendEmailVerification(recipient, verificationToken) {
     subject: "Email verification",
     html: `<div>
     <h2>Please verify your email!</h2>
-    <a href='http://${process.env.BASE_URL}/api/auth/verify/${verificationToken}'>Click to verify</a>
+    <a href='${process.env.BASE_URL}/api/auth/verify/${verificationToken}'>Click to verify</a>
     </div>`,
   });
 }
