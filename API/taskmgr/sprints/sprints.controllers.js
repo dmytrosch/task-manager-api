@@ -3,6 +3,7 @@ const projectModel = require("../projects/projects.model");
 const taskModel = require("../tasks/tasks.model");
 const dateFormat = require("dateformat");
 const diff = require("../../../utils/date");
+const {NotFoundError} = require('../../../helpers/error.helpers');
 
 const {
   Types: { ObjectId },
@@ -13,6 +14,12 @@ class SprintsControllers {
     const { projectId } = req.params;
     const { name, startAt, finishedAt } = req.body;
     const user = req.user;
+
+    const isProjectExist = await projectModel.findById(projectId);
+
+    if (!isProjectExist) {
+      throw new NotFoundError("Project not found");
+    }
 
     const startAtFormatted = dateFormat(startAt, "paddedShortDate");
     const finishedAtFormatted = dateFormat(finishedAt, "paddedShortDate");
@@ -47,6 +54,12 @@ class SprintsControllers {
     const { sprintId } = req.params;
     const sId = ObjectId(sprintId);
 
+    const isSprintExist = await sprintModel.findById(sprintId);
+
+    if (!isSprintExist) {
+      throw new NotFoundError("Sprint not found");
+    }
+
     await projectModel.removeSprint(sId);
     const tasksId = await sprintModel.findById(sprintId);
     const { tasksIds } = tasksId;
@@ -60,6 +73,13 @@ class SprintsControllers {
     const { sprintId } = req.params;
     const user = req.user;
     const _id = ObjectId(sprintId);
+
+    const isSprintExist = await sprintModel.findById(sprintId);
+
+    if (!isSprintExist) {
+      throw new NotFoundError("Sprint not found");
+    }
+
 
     const sprint = await sprintModel.findById(sprintId);
     const isOwner =
@@ -93,20 +113,20 @@ class SprintsControllers {
       },
     ]);
 
-    const [prepearedResult] = result.map(item => {
+    const [prepearedResult] = result.map((item) => {
       return {
         id: item._id,
         name: item.name,
-        tasks: item.tasks.map(task => {
+        tasks: item.tasks.map((task) => {
           return {
             id: task._id,
             name: task.name,
             plannedTime: task.plannedTime,
             spendedTime: task.spendedTime,
-          }
+          };
         }),
         isOwner,
-      }
+      };
     });
 
     return res.status(200).send(prepearedResult);
@@ -115,6 +135,12 @@ class SprintsControllers {
   async updateName(req, res) {
     const { sprintId } = req.params;
     const { name } = req.body;
+
+    const isSprintExist = await sprintModel.findById(sprintId);
+
+    if (!isSprintExist) {
+      throw new NotFoundError("Sprint not found");
+    }
 
     const updatedSprint = await sprintModel.updateSprintName(sprintId, name);
 

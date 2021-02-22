@@ -17,6 +17,7 @@ const {
   ConflictError,
   UnauthorizedError,
   JoiValidationError,
+  NotFoundError,
 } = require("../helpers/error.helpers");
 
 module.exports = class taskMgrServer {
@@ -61,7 +62,8 @@ module.exports = class taskMgrServer {
       if (
         error instanceof ConflictError ||
         error instanceof UnauthorizedError ||
-        error instanceof JoiValidationError
+        error instanceof JoiValidationError || 
+        error instanceof NotFoundError
       ) {
         status = error.status;
       }
