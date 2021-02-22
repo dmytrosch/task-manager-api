@@ -1,4 +1,6 @@
 const nodemailer = require("nodemailer");
+const validateEmailTemplate = require("./emailTemplates/validateEmailTemplate");
+const resetPasswordTemplate = require("./emailTemplates/resetPasswordTemplate");
 
 const transport = nodemailer.createTransport({
   service: "gmail",
@@ -9,29 +11,25 @@ const transport = nodemailer.createTransport({
 });
 
 async function sendEmailVerification(recipient, verificationToken) {
-  try {
-    await transport.sendMail({
-      from: process.env.NODEMAILER_EMAIL,
-      to: recipient,
-      subject: "Email verification",
-      html: `<div>
-    <h2>Please verify your email!</h2>
-    <a href='${process.env.BASE_URL}/verify/${verificationToken}'>Click to verify</a>
-    </div>`,
-    });
-  } catch (err) {
-    console.log(err);
-  }
-}
-async function sendResetPasswordLink(recipient, resetToken) {
+  const link = `${process.env.BASE_URL}/verify/${verificationToken}`;
+  const markup = validateEmailTemplate(link);
   await transport.sendMail({
     from: process.env.NODEMAILER_EMAIL,
     to: recipient,
-    subject: "Reset password",
-    html: `<div>
-    <h2>Change your password!</h2>
-    <a href='${process.env.BASE_URL}/reset-password/${resetToken}'>Click to reset password!</a>
-    </div>`,
+    subject: "Підтвердіть вашу електронну адресу",
+    text: `Для завершення реєстрації підтвердіть електронну адресу. Перейдіть за посиланням - ${link}`,
+    html: markup,
+  });
+}
+async function sendResetPasswordLink(recipient, resetToken) {
+  const link = `${process.env.BASE_URL}/reset-password/${resetToken}`;
+  const markup = resetPasswordTemplate(link);
+  await transport.sendMail({
+    from: process.env.NODEMAILER_EMAIL,
+    to: recipient,
+    subject: "Скидання паролю",
+    text: `Нам прикро, що ви забули свій пароль. На жаль, ми не можемо відновити його, але можемо допомогти створити новий. Для цього перейдіть за посиланням - ${link}`,
+    html: markup,
   });
 }
 
