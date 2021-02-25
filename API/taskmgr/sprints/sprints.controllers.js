@@ -1,9 +1,9 @@
 const sprintModel = require("./sprints.model");
 const projectModel = require("../projects/projects.model");
 const taskModel = require("../tasks/tasks.model");
-const dateFormat = require("dateformat");
 const diff = require("../../../utils/date");
 const {NotFoundError} = require('../../../helpers/error.helpers');
+const { DateTime } = require("luxon");
 
 const {
   Types: { ObjectId },
@@ -21,8 +21,11 @@ class SprintsControllers {
       throw new NotFoundError("Project not found");
     }
 
-    const startAtFormatted = dateFormat(startAt, "paddedShortDate");
-    const finishedAtFormatted = dateFormat(finishedAt, "paddedShortDate");
+    const [startYear, startMonth, startDay] = startAt.split('/');
+    const [finishedYear, finishedMonth, finishedDay] = finishedAt.split('/');
+
+    const startAtFormatted = DateTime.fromObject({year: startYear, month: startMonth, day: startDay}).setLocale('zh').toLocaleString();
+    const finishedAtFormatted = DateTime.fromObject({year: finishedYear, month: finishedMonth, day: finishedDay}).setLocale('zh').toLocaleString();
 
     const timeDifference = diff(
       startAtFormatted,
@@ -44,8 +47,8 @@ class SprintsControllers {
     return res.status(201).send({
       id: newSprint._id,
       name,
-      startAtFormatted,
-      finishedAtFormatted,
+      startAt: startAtFormatted,
+      finishedAt: finishedAtFormatted,
       timeDifference,
     });
   }
