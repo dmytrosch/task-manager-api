@@ -76,6 +76,7 @@ class ProjectsControllers {
             name: 1,
             startAt: 1,
             finishedAt: 1,
+            timeDifference: 1,
           },
         },
       },
@@ -93,11 +94,13 @@ class ProjectsControllers {
           }
         }),
         sprints: item.sprints.map(sprint => {
+          console.log(sprint);
           return {
             id: sprint._id,
             name: sprint.name,
             startAt: sprint.startAt,
             finishedAt: sprint.finishedAt,
+            timeDifference: sprint.timeDifference,
           }
         }),
         isOwner,
