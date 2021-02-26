@@ -111,6 +111,7 @@ class SprintsControllers {
             name: 1,
             plannedTime: 1,
             spendedTime: 1,
+            totalWastedTime: 1,
           },
         },
       },
@@ -126,6 +127,7 @@ class SprintsControllers {
             name: task.name,
             plannedTime: task.plannedTime,
             spendedTime: task.spendedTime,
+            totalWastedTime: task.totalWastedTime,
           };
         }),
         isOwner,
