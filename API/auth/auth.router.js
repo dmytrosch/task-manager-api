@@ -34,7 +34,7 @@ authRouter.post("/logout", authorization, asyncWrapper(userLogout));
 
 authRouter.get("/verify/:verificationToken", asyncWrapper(verifyEmail));
 
-authRouter.get(
+authRouter.post(
   "/reset-password/request",
   validator(emailSchema),
   asyncWrapper(resetPasswordRequest)
