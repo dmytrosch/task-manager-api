@@ -38,7 +38,7 @@ projectsRouter.patch(
   authorization,
   asyncWrapper(ProjectsControllers.updateName)
 );
-projectsRouter.patch("/:projectId/change-description", validator(projectUpdateDescriptionSchema), asyncWrapper())
+projectsRouter.patch("/:projectId/change-description", validator(projectUpdateDescriptionSchema), asyncWrapper(ProjectsControllers.updateDescription))
 
 projectsRouter.get(
   "/:projectId",

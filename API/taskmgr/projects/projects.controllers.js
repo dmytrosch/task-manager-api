@@ -204,7 +204,7 @@ class ProjectsControllers {
       throw new NotFoundError('Project not found');
     }
 
-    const updatedProject = await projectModel.updateProjectName(
+    const updatedProject = await projectModel.updateProjectDescription(
       projectId,
       description
     );
