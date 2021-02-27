@@ -14,10 +14,11 @@ const newPasswordSchema = Joi.object({
 });
 const emailSchema = Joi.object({
   email: Joi.string().min(6).email().required(),
-})
+});
 
 module.exports = {
   registerSchema,
   loginSchema,
-  newPasswordSchema, emailSchema
+  newPasswordSchema,
+  emailSchema,
 };

@@ -19,6 +19,7 @@ projectSchema.statics.addSprint = addSprint;
 projectSchema.statics.removeProjectFromColletion = removeProjectFromColletion;
 projectSchema.statics.addUserToProject = addUserToProject;
 projectSchema.statics.updateProjectName = updateProjectName;
+projectSchema.statics.updateProjectDescription = updateProjectDescription;
 projectSchema.statics.removeSprint = removeSprint;
 
 async function addParticipant(participantId, projectId) {
@@ -51,6 +52,13 @@ async function updateProjectName(projectId, newName) {
   return this.findByIdAndUpdate(
     projectId,
     { $set: { name: newName } },
+    { new: true }
+  );
+}
+async function updateProjectDescription(projectId, newDescription) {
+  return this.findByIdAndUpdate(
+    projectId,
+    { $set: { description: newDescription } },
     { new: true }
   );
 }

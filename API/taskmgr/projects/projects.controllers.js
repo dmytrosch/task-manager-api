@@ -193,6 +193,27 @@ class ProjectsControllers {
       name: updatedProject.name,
       description: updatedProject.description,
     });
+  };
+  async updateDescription(req,res){
+    const { projectId } = req.params;
+    const { description } = req.body;
+
+    const isProjectExist = await projectModel.findById(projectId);
+
+    if(!isProjectExist){
+      throw new NotFoundError('Project not found');
+    }
+
+    const updatedProject = await projectModel.updateProjectName(
+      projectId,
+      description
+    );
+
+    return res.status(200).send({
+      id: updatedProject._id,
+      name: updatedProject.name,
+      description: updatedProject.description,
+    });
   }
 }
 

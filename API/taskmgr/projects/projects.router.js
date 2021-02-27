@@ -5,7 +5,7 @@ const authorization = require("../../middlewares/authorization");
 const {
   projectCreateSchema,
   projectUpdateNameSchema,
-  addParticipantToProjectSchema,
+  addParticipantToProjectSchema,projectUpdateDescriptionSchema
 } = require("./projectJoiValidation");
 
 const validator = require("../../../helpers/joi.validation.handler.js");
@@ -38,6 +38,7 @@ projectsRouter.patch(
   authorization,
   asyncWrapper(ProjectsControllers.updateName)
 );
+projectsRouter.patch("/:projectId/change-description", validator(projectUpdateDescriptionSchema), asyncWrapper())
 
 projectsRouter.get(
   "/:projectId",
