@@ -188,11 +188,7 @@ class ProjectsControllers {
       name
     );
 
-    return res.status(200).send({
-      id: updatedProject._id,
-      name: updatedProject.name,
-      description: updatedProject.description,
-    });
+    return res.status(200).send(updatedProject);
   };
   async updateDescription(req,res){
     const { projectId } = req.params;
@@ -209,11 +205,7 @@ class ProjectsControllers {
       description
     );
 
-    return res.status(200).send({
-      id: updatedProject._id,
-      name: updatedProject.name,
-      description: updatedProject.description,
-    });
+    return res.status(200).send(updatedProject);
   }
 }
 
