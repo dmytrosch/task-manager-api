@@ -39,13 +39,9 @@ async function addSprint(projectId, sprintId) {
 }
 
 async function addUserToProject(projectId, userId) {
-  return this.findByIdAndUpdate(
-    projectId,
-    {
-      $push: { participantsIds: userId },
-    },
-    { new: true }
-  );
+  return this.findByIdAndUpdate(projectId, {
+    $push: { participantsIds: userId },
+  });
 }
 
 async function removeProjectFromColletion(id) {

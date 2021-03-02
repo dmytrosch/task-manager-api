@@ -129,8 +129,8 @@ class ProjectsControllers {
       throw new ConflictError("User already in project");
     }
     await userToAdd.addProject(projectId);
-    const project = await projectModel.addUserToProject(projectId, userToAdd._id);
-    return res.status(200).json(project);
+    await projectModel.addUserToProject(projectId, userToAdd._id);
+    return res.status(200).end();
   }
 
   async removeProject(req, res) {
