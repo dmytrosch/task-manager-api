@@ -2,6 +2,7 @@ const projectModel = require("./projects.model");
 const userModel = require("../../users/users.model");
 const sprintModel = require("../sprints/sprints.model");
 const taskModel = require("../tasks/tasks.model");
+const {sendInviteToProject} = require('../../../utils/emailSender')
 const {
   Types: { ObjectId },
   Promise,
@@ -129,7 +130,8 @@ class ProjectsControllers {
       throw new ConflictError("User already in project");
     }
     await userToAdd.addProject(projectId);
-    await projectModel.addUserToProject(projectId, userToAdd._id);
+    const project = await projectModel.addUserToProject(projectId, userToAdd._id);
+    await sendInviteToProject(email, project)
     return res.status(200).end();
   }
 
