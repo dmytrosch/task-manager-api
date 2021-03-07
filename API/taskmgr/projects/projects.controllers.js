@@ -98,7 +98,6 @@ class ProjectsControllers {
           };
         }),
         sprints: item.sprints.map((sprint) => {
-          console.log(sprint);
           return {
             id: sprint._id,
             name: sprint.name,
@@ -195,10 +194,7 @@ class ProjectsControllers {
       projectId,
       name
     );
-    const objectToSend = { ...updatedProject, id: updatedProject._id };
-    delete objectToSend._id
-
-    return res.status(200).send(objectToSend);
+    return res.status(200).send(updatedProject);
   }
   async updateDescription(req, res) {
     const { projectId } = req.params;
@@ -214,10 +210,8 @@ class ProjectsControllers {
       projectId,
       description
     );
-    const objectToSend = { ...updatedProject, id: updatedProject._id };
-    delete objectToSend._id
 
-    return res.status(200).send(objectToSend);
+    return res.status(200).send(updatedProject);
   }
 }
 
