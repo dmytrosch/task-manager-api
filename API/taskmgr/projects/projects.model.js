@@ -27,11 +27,9 @@ async function addParticipant(participantId, projectId) {
     $push: { participants: participantId },
   });
 }
-
 async function getProjectById(projectId) {
   return this.findById(projectId);
 }
-
 async function addSprint(projectId, sprintId) {
   return this.findByIdAndUpdate(projectId, {
     $push: { sprintsIds: sprintId },
