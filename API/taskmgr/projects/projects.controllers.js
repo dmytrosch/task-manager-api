@@ -2,13 +2,16 @@ const projectModel = require("./projects.model");
 const userModel = require("../../users/users.model");
 const sprintModel = require("../sprints/sprints.model");
 const taskModel = require("../tasks/tasks.model");
-const {sendInviteToProject} = require('../../../utils/emailSender')
+const { sendInviteToProject } = require("../../../utils/emailSender");
 const {
   Types: { ObjectId },
   Promise,
 } = require("mongoose");
 
-const { ConflictError, NotFoundError } = require("../../../helpers/error.helpers");
+const {
+  ConflictError,
+  NotFoundError,
+} = require("../../../helpers/error.helpers");
 
 class ProjectsControllers {
   async createProject(req, res) {
@@ -83,18 +86,18 @@ class ProjectsControllers {
       },
     ]);
 
-    const [prepearedResult] = result.map(item => {
+    const [prepearedResult] = result.map((item) => {
       return {
         id: item._id,
         name: item.name,
         description: item.description,
-        participants: item.participants.map(participant => {
+        participants: item.participants.map((participant) => {
           return {
             id: participant._id,
             email: participant.email,
-          }
+          };
         }),
-        sprints: item.sprints.map(sprint => {
+        sprints: item.sprints.map((sprint) => {
           console.log(sprint);
           return {
             id: sprint._id,
@@ -102,10 +105,10 @@ class ProjectsControllers {
             startAt: sprint.startAt,
             finishedAt: sprint.finishedAt,
             timeDifference: sprint.timeDifference,
-          }
+          };
         }),
         isOwner,
-      }
+      };
     });
 
     return res.status(200).send(prepearedResult);
@@ -130,8 +133,11 @@ class ProjectsControllers {
       throw new ConflictError("User already in project");
     }
     await userToAdd.addProject(projectId);
-    const project = await projectModel.addUserToProject(projectId, userToAdd._id);
-    await sendInviteToProject(email, project)
+    const project = await projectModel.addUserToProject(
+      projectId,
+      userToAdd._id
+    );
+    await sendInviteToProject(email, project);
     return res.status(200).end();
   }
 
@@ -181,33 +187,37 @@ class ProjectsControllers {
 
     const isProjectExist = await projectModel.findById(projectId);
 
-    if(!isProjectExist){
-      throw new NotFoundError('Project not found');
+    if (!isProjectExist) {
+      throw new NotFoundError("Project not found");
     }
 
     const updatedProject = await projectModel.updateProjectName(
       projectId,
       name
     );
+    const objectToSend = { ...updatedProject, id: updatedProject._id };
+    delete objectToSend._id
 
-    return res.status(200).send(updatedProject);
-  };
-  async updateDescription(req,res){
+    return res.status(200).send(objectToSend);
+  }
+  async updateDescription(req, res) {
     const { projectId } = req.params;
     const { description } = req.body;
 
     const isProjectExist = await projectModel.findById(projectId);
 
-    if(!isProjectExist){
-      throw new NotFoundError('Project not found');
+    if (!isProjectExist) {
+      throw new NotFoundError("Project not found");
     }
 
     const updatedProject = await projectModel.updateProjectDescription(
       projectId,
       description
     );
+    const objectToSend = { ...updatedProject, id: updatedProject._id };
+    delete objectToSend._id
 
-    return res.status(200).send(updatedProject);
+    return res.status(200).send(objectToSend);
   }
 }
 
