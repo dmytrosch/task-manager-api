@@ -2,7 +2,7 @@ const sprintModel = require("./sprints.model");
 const projectModel = require("../projects/projects.model");
 const taskModel = require("../tasks/tasks.model");
 const diff = require("../../../utils/date");
-const {NotFoundError} = require('../../../helpers/error.helpers');
+const { NotFoundError } = require("../../../helpers/error.helpers");
 const { DateTime } = require("luxon");
 
 const {
@@ -21,11 +21,23 @@ class SprintsControllers {
       throw new NotFoundError("Project not found");
     }
 
-    const [startYear, startMonth, startDay] = startAt.split('/');
-    const [finishedYear, finishedMonth, finishedDay] = finishedAt.split('/');
+    const [startYear, startMonth, startDay] = startAt.split("/");
+    const [finishedYear, finishedMonth, finishedDay] = finishedAt.split("/");
 
-    const startAtFormatted = DateTime.fromObject({year: startYear, month: startMonth, day: startDay}).setLocale('zh').toLocaleString();
-    const finishedAtFormatted = DateTime.fromObject({year: finishedYear, month: finishedMonth, day: finishedDay}).setLocale('zh').toLocaleString();
+    const startAtFormatted = DateTime.fromObject({
+      year: startYear,
+      month: startMonth,
+      day: startDay,
+    })
+      .setLocale("zh")
+      .toLocaleString();
+    const finishedAtFormatted = DateTime.fromObject({
+      year: finishedYear,
+      month: finishedMonth,
+      day: finishedDay,
+    })
+      .setLocale("zh")
+      .toLocaleString();
 
     const timeDifference = diff(
       startAtFormatted,
@@ -83,7 +95,6 @@ class SprintsControllers {
       throw new NotFoundError("Sprint not found");
     }
 
-
     const sprint = await sprintModel.findById(sprintId);
     const isOwner =
       sprint.owner.toString() === user._id.toString() ? true : false;
@@ -113,6 +124,7 @@ class SprintsControllers {
             spendedTime: 1,
             totalWastedTime: 1,
           },
+          timeDifference: 1,
         },
       },
     ]);
@@ -130,6 +142,7 @@ class SprintsControllers {
             totalWastedTime: task.totalWastedTime,
           };
         }),
+        timeDifference: item.timeDifference,
         isOwner,
       };
     });
