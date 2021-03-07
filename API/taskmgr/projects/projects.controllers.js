@@ -194,7 +194,9 @@ class ProjectsControllers {
       projectId,
       name
     );
-    return res.status(200).send(updatedProject);
+    const newObj = {...updatedProject._doc, id: updatedProject._id}
+    delete newObj._id
+    return res.status(200).send(newObj);
   }
   async updateDescription(req, res) {
     const { projectId } = req.params;
@@ -210,8 +212,9 @@ class ProjectsControllers {
       projectId,
       description
     );
-
-    return res.status(200).send(updatedProject);
+    const newObj = {...updatedProject._doc, id: updatedProject._id}
+    delete newObj._id
+    return res.status(200).send(newObj);
   }
 }
 
