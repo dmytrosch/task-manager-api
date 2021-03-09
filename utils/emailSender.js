@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer");
 const validateEmailTemplate = require("./emailTemplates/validateEmailTemplate");
 const resetPasswordTemplate = require("./emailTemplates/resetPasswordTemplate");
+const invitationToProjectTemplate = require("./emailTemplates/invitationToProjectTemplate");
 
 const transport = nodemailer.createTransport({
   service: "gmail",
@@ -32,5 +33,22 @@ async function sendResetPasswordLink(recipient, resetToken) {
     html: markup,
   });
 }
+async function sendInviteToProject(recipient, project) {
+  const { _id, name } = project;
+  const [username] = recipient.split("@");
+  const link = `${process.env.BASE_URL}/projects/${_id}/sprints`;
+  const markup = invitationToProjectTemplate(link, name, username);
+  await transport.sendMail({
+    from: process.env.NODEMAILER_EMAIL,
+    to: recipient,
+    subject: "Запрошення до проєкту",
+    text: `Шановний, ${username}! Вас додали до проєкту ${name}. Тепер Ви можете брати в ньому участь. Посилання на проєкт - ${link}`,
+    html: markup,
+  });
+}
 
-module.exports = { sendEmailVerification, sendResetPasswordLink };
+module.exports = {
+  sendEmailVerification,
+  sendResetPasswordLink,
+  sendInviteToProject,
+};

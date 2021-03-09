@@ -2,7 +2,10 @@ const taskModel = require("./tasks.model");
 const sprintModel = require("../sprints/sprints.model");
 const { DateTime } = require("luxon");
 
-const {NotFoundError} = require('../../../helpers/error.helpers');
+const {
+  NotFoundError,
+  ConflictError,
+} = require("../../../helpers/error.helpers");
 
 const {
   Types: { ObjectId },
@@ -19,15 +22,19 @@ class TasksControllers {
       throw new NotFoundError("Sprint not found");
     }
 
+    if (plannedTime < 1) {
+      throw new ConflictError("Spended time must be more than 0");
+    }
+
     const sprint = await sprintModel.findById(ObjectId(sprintId));
 
-    const [month, day, year] = sprint.startAt.split("/");
+    const [year, month, day] = sprint.startAt.split("/");
 
     const sprintDuration = sprint.timeDifference;
 
     const spendedTime = [];
 
-    for (let i = 0; i <= sprintDuration; i++) {
+    for (let i = 0; i < sprintDuration; i++) {
       const dayValue = i;
 
       const yearNum = Number(year);
@@ -53,15 +60,13 @@ class TasksControllers {
 
     await sprintModel.addTask(sprintId, newTask._id);
 
-    return res
-      .status(201)
-      .send({
-        id: newTask._id,
-        name,
-        plannedTime,
-        spendedTime,
-        totalWastedTime: newTask.totalWastedTime,
-      });
+    return res.status(201).send({
+      id: newTask._id,
+      name,
+      plannedTime,
+      spendedTime,
+      totalWastedTime: newTask.totalWastedTime,
+    });
   }
 
   async removeTaskfromSprint(req, res) {

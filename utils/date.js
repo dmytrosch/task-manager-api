@@ -5,7 +5,7 @@ function dateDiff(startDate, finishDate) {
     Math.abs(date2.getTime() - date1.getTime()) / (1000 * 3600 * 24),
   );
 
-  return diff;
+  return diff + 1;
 }
 
 module.exports = dateDiff;

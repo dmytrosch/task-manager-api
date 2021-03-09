@@ -2,11 +2,14 @@ const Joi = require("joi");
 
 const projectCreateSchema = Joi.object({
   name: Joi.string().min(1).required(),
-  description: Joi.string().min(1).required(),
+  description: Joi.string().min(1),
 });
 
 const projectUpdateNameSchema = Joi.object({
   name: Joi.string().min(1).required(),
+});
+const projectUpdateDescriptionSchema = Joi.object({
+  description: Joi.string().min(1).required(),
 });
 
 const addParticipantToProjectSchema = Joi.object({
@@ -17,4 +20,5 @@ module.exports = {
   projectCreateSchema,
   projectUpdateNameSchema,
   addParticipantToProjectSchema,
+  projectUpdateDescriptionSchema,
 };
