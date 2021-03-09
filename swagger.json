@@ -3,7 +3,7 @@
   "info": {
     "title": "Task manager",
     "description": "Created by JustDenis\n",
-    "version": "1.0.0"
+    "version": "1.0.1"
   },
   "externalDocs": {
     "description": "Find out more about Swagger",
@@ -141,6 +141,101 @@
                 }
               }
             }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/auth/verify/{verificationToken}": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Verify email",
+        "operationId": "verifyEmail",
+        "parameters": [
+          {
+            "name": "verificationToken",
+            "in": "path",
+            "description": "Verification token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Verified"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/auth/reset-password/{resetPasswordToken}": {
+      "patch": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Verify email",
+        "operationId": "resetPassword",
+        "parameters": [
+          {
+            "name": "resetPasswordToken",
+            "in": "path",
+            "description": "Reset password",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Ok"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/auth/reset-password/request": {
+      "patch": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Verify email",
+        "operationId": "resetPasswordRequest",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/ResetPasswordRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "404": {
+            "description": "User not found"
           }
         },
         "security": [
@@ -1222,7 +1317,7 @@
       "GetCurrentProject": {
         "type": "object",
         "properties": {
-          "_id": {
+          "id": {
             "type": "string"
           },
           "name": {
@@ -1291,7 +1386,7 @@
       "CurrentSprint": {
         "type": "object",
         "properties": {
-          "_id": {
+          "id": {
             "type": "string"
           },
           "name": {
@@ -1311,11 +1406,23 @@
       "CurrentSprintItem": {
         "type": "object",
         "properties": {
-          "_id": {
+          "id": {
             "type": "string"
           },
           "name": {
             "type": "string"
+          },
+          "plannedTime": {
+            "type": "number"
+          },
+          "spendedTime": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CurrentSprintItem_spendedTime"
+            }
+          },
+          "totalWastedTime": {
+            "type": "number"
           }
         }
       },
@@ -1491,24 +1598,50 @@
           "spendedTime": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "number",
-                  "example": 0
-                },
-                "date": {
-                  "type": "string",
-                  "example": "2021-03-13"
-                },
-                "wastedTime": {
-                  "type": "number",
-                  "example": 0
-                }
-              }
+              "$ref": "#/components/schemas/SearchByNameResponse_inner_spendedTime"
             }
           },
           "totalWastedTime": {
+            "type": "number",
+            "example": 0
+          }
+        }
+      },
+      "ResetPasswordRequest": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "CurrentSprintItem_spendedTime": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "date": {
+            "type": "string",
+            "example": "2021-03-06"
+          },
+          "wastedTime": {
+            "type": "number"
+          }
+        }
+      },
+      "SearchByNameResponse_inner_spendedTime": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 0
+          },
+          "date": {
+            "type": "string",
+            "example": "2021-03-13"
+          },
+          "wastedTime": {
             "type": "number",
             "example": 0
           }
@@ -1533,6 +1666,15 @@
           "application/json": {
             "schema": {
               "$ref": "#/components/schemas/Login"
+            }
+          }
+        }
+      },
+      "ResetPasswordRequest": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ResetPasswordRequest"
             }
           }
         },
