@@ -25,4 +25,6 @@ Task Manager is React web-application for organizing the work of a development t
 
 **Deploy of React app - https://task-manager-goit.netlify.app**
 
+**Front-End - https://github.com/dmytrosch/task-manager-react**
+
 **Swagger - https://task-manager-goit-api.herokuapp.com/api-docs/**
